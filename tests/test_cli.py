@@ -331,3 +331,79 @@ def test_width_negative_value():
     result = run(["Hello", "--width", "-5"])
     assert result.returncode == 1
     assert "width" in result.stderr
+
+
+# --- --all readable ---
+
+def test_all_readable_is_subset_of_all():
+    """--all readable renders fewer fonts than --all."""
+    from color_banner.renderer import list_fonts, readable_fonts
+    result_all = run(["X", "--all", "--no-color"])
+    result_readable = run(["X", "--all", "readable", "--no-color"])
+    all_headers = [l for l in result_all.stdout.splitlines()
+                   if l.startswith("--- ") and l.endswith(" ---")]
+    readable_headers = [l for l in result_readable.stdout.splitlines()
+                        if l.startswith("--- ") and l.endswith(" ---")]
+    assert len(readable_headers) < len(all_headers)
+    assert len(readable_headers) == len(readable_fonts())
+
+
+def test_all_readable_excludes_doh():
+    """--all readable must not render the 'doh' font (75 rows, too tall)."""
+    result = run(["X", "--all", "readable", "--no-color"])
+    assert "doh" not in result.stdout
+
+
+def test_all_readable_includes_slant():
+    """--all readable must include the 'slant' font."""
+    result = run(["X", "--all", "readable", "--no-color"])
+    assert "slant" in result.stdout
+
+
+def test_all_no_arg_still_renders_all():
+    """--all (no filter) still renders all fonts."""
+    from color_banner.renderer import list_fonts
+    result = run(["X", "--all", "--no-color"])
+    headers = [l for l in result.stdout.splitlines()
+               if l.startswith("--- ") and l.endswith(" ---")]
+    assert len(headers) == len(list_fonts())
+
+
+def test_all_invalid_filter():
+    """--all with an unrecognised filter exits with code 1."""
+    result = run(["X", "--all", "garbage"])
+    assert result.returncode == 1
+    assert "readable" in result.stderr
+
+
+# --- --save-all DIR --readable ---
+
+def test_save_all_readable_creates_fewer_files(tmp_path):
+    """--save-all DIR --readable creates fewer files than --save-all DIR."""
+    from color_banner.renderer import list_fonts, readable_fonts
+    all_dir = tmp_path / "all"
+    readable_dir = tmp_path / "readable"
+    run(["Hi", "--save-all", str(all_dir), "--no-color"])
+    run(["Hi", "--save-all", str(readable_dir), "--readable", "--no-color"])
+    assert len(list(readable_dir.glob("*.ans"))) < len(list(all_dir.glob("*.ans")))
+    assert len(list(readable_dir.glob("*.ans"))) == len(readable_fonts())
+
+
+def test_save_all_readable_excludes_doh(tmp_path):
+    """--save-all DIR --readable must not save the 'doh' font."""
+    out_dir = tmp_path / "out"
+    run(["Hi", "--save-all", str(out_dir), "--readable", "--no-color"])
+    names = [f.name for f in out_dir.glob("*.ans")]
+    assert not any("doh" in n for n in names)
+
+
+def test_save_all_readable_preserves_original_numbers(tmp_path):
+    """Font numbers in --save-all --readable files match original numbering."""
+    from color_banner.renderer import numbered_fonts
+    num_map = {name: f"{n:03d}" for n, name in numbered_fonts()}
+    out_dir = tmp_path / "out"
+    run(["Hi", "--save-all", str(out_dir), "--readable", "--no-color"])
+    for f in out_dir.glob("*.ans"):
+        parts = f.stem.split("-", 1)
+        file_num, font_name = parts[0], parts[1]
+        assert num_map[font_name] == file_num

@@ -35,8 +35,12 @@ def _build_parser() -> argparse.ArgumentParser:
         help="print font names and exit; use 'readable' to show only clean-rendering fonts",
     )
     font_group.add_argument(
-        "--all", action="store_true",
-        help="render banner for every available font (prints header before each)",
+        "--all", nargs="?", const="all", metavar="FILTER",
+        help="render banner for every font; use 'readable' to skip unreadable fonts",
+    )
+    font_group.add_argument(
+        "--readable", action="store_true",
+        help="filter --save-all to readable fonts only",
     )
     font_group.add_argument(
         "--width", type=int, default=80, metavar="N",
@@ -119,7 +123,15 @@ def main() -> None:
             print(f"{name}: {' -> '.join(stops)}")
         return
 
-    if args.all:
+    if args.all is not None:
+        _VALID_FILTERS = ("all", "readable")
+        if args.all not in _VALID_FILTERS:
+            print(
+                f"error: --all: unknown filter '{args.all}'. "
+                f"Valid options: readable, or omit for all.",
+                file=sys.stderr,
+            )
+            sys.exit(1)
         if not args.text:
             print("error: TEXT is required", file=sys.stderr)
             sys.exit(1)
@@ -128,8 +140,9 @@ def main() -> None:
         except ValueError as exc:
             print(f"error: {exc}", file=sys.stderr)
             sys.exit(1)
+        font_list = readable_fonts() if args.all == "readable" else numbered_fonts()
         stdout_no_color = args.no_color or not sys.stdout.isatty()
-        for num, font_name in numbered_fonts():
+        for num, font_name in font_list:
             print(f"--- {num:03d} {font_name} ---")
             try:
                 rows = render(args.text, font=font_name, width=args.width)
@@ -149,8 +162,9 @@ def main() -> None:
         except ValueError as exc:
             print(f"error: {exc}", file=sys.stderr)
             sys.exit(1)
+        font_list = readable_fonts() if args.readable else numbered_fonts()
         font_banners = []
-        for num, font_name in numbered_fonts():
+        for num, font_name in font_list:
             try:
                 rows = render(args.text, font=font_name, width=args.width)
             except ValueError:
