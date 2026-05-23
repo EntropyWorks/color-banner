@@ -196,6 +196,18 @@ def main() -> None:
         print(f"error: {exc}", file=sys.stderr)
         sys.exit(1)
 
+    # Validate --function-name early so the error is reported before any rendering
+    if args.export:
+        from color_banner.output import _VALID_FUNCTION_NAME
+        if not _VALID_FUNCTION_NAME.match(args.function_name):
+            print(
+                f"error: invalid function name '{args.function_name}': "
+                "must be a valid bash identifier (letters, digits, underscores; "
+                "cannot start with a digit)",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+
     # Render ASCII art
     try:
         rows = render(args.text, font=font, width=args.width)

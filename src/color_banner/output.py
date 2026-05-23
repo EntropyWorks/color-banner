@@ -4,7 +4,10 @@
 from __future__ import annotations
 
 import base64
+import re
 from pathlib import Path
+
+_VALID_FUNCTION_NAME = re.compile(r"^[a-zA-Z_][a-zA-Z0-9_]*$")
 
 _ATTRIBUTION_LINE1 = "Based on Calligraphy by GeopJr <https://codeberg.org/GeopJr/Calligraphy>"
 _ATTRIBUTION_LINE2 = 'Originally by Gregor "gregorni" Niehl — Licensed under GPL v3'
@@ -83,8 +86,15 @@ def write_shell_export(
     """Write a self-contained bash function that replays the banner.
 
     The ANSI output is base64-encoded and embedded inline.
+    Raises ValueError if function_name is not a valid bash identifier.
     Raises OSError on write failure.
     """
+    if not _VALID_FUNCTION_NAME.match(function_name):
+        raise ValueError(
+            f"invalid function name '{function_name}': "
+            "must be a valid bash identifier (letters, digits, underscores; "
+            "cannot start with a digit)"
+        )
     ansi_bytes = ("\n".join(lines) + "\n").encode("utf-8")
     b64 = base64.b64encode(ansi_bytes).decode("ascii")
     script = (

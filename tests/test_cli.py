@@ -102,6 +102,30 @@ def test_export_custom_function_name(tmp_path):
     assert "my_banner()" in out.read_text(encoding="utf-8")
 
 
+def test_export_invalid_function_name_exits_nonzero(tmp_path):
+    """--function-name with shell metacharacters exits with code 1."""
+    out = tmp_path / "splash.sh"
+    result = run(["Hi", "--export", str(out), "--function-name", "foo bar"])
+    assert result.returncode == 1
+    assert "invalid function name" in result.stderr
+
+
+def test_export_function_name_newline_rejected(tmp_path):
+    """--function-name with a newline is rejected."""
+    out = tmp_path / "splash.sh"
+    result = run(["Hi", "--export", str(out), "--function-name", "foo\nbar"])
+    assert result.returncode == 1
+    assert "invalid function name" in result.stderr
+
+
+def test_export_function_name_starts_with_digit_rejected(tmp_path):
+    """--function-name starting with a digit is rejected."""
+    out = tmp_path / "splash.sh"
+    result = run(["Hi", "--export", str(out), "--function-name", "123bad"])
+    assert result.returncode == 1
+    assert "invalid function name" in result.stderr
+
+
 def test_unknown_palette_exits_nonzero():
     result = run(["Hello", "--palette", "notapalette"])
     assert result.returncode == 1

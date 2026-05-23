@@ -105,6 +105,32 @@ def test_write_shell_export_passes_bash_syntax_check(tmp_path):
     assert result.returncode == 0, f"bash -n failed:\n{result.stderr}"
 
 
+def test_write_shell_export_invalid_function_name_raises(tmp_path):
+    """write_shell_export rejects names that are not valid bash identifiers."""
+    out = tmp_path / "splash.sh"
+    bad_names = [
+        "foo bar",       # space
+        "123bad",        # starts with digit
+        "foo;bar",       # semicolon
+        "foo\nbar",      # newline
+        "foo$(evil)",    # command substitution
+        "",              # empty
+        "foo-bar",       # hyphen (invalid in bash identifiers)
+    ]
+    for name in bad_names:
+        with pytest.raises(ValueError, match="invalid function name"):
+            write_shell_export(SAMPLE_LINES, str(out), VERSION, function_name=name)
+
+
+def test_write_shell_export_valid_function_names(tmp_path):
+    """write_shell_export accepts any valid bash identifier."""
+    valid_names = ["show_banner", "_splash", "banner123", "MY_BANNER", "_"]
+    for name in valid_names:
+        out = tmp_path / f"{name}.sh"
+        write_shell_export(SAMPLE_LINES, str(out), VERSION, function_name=name)
+        assert name + "()" in out.read_text(encoding="utf-8")
+
+
 def test_write_ansi_file_creates_parent_dirs(tmp_path):
     """write_ansi_file creates parent directories automatically."""
     deep_path = tmp_path / "a" / "b" / "c" / "banner.ans"
