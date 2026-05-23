@@ -18,8 +18,10 @@ uv tool install color-banner
 color-banner TEXT [options]
 
 font options:
-  -f, --font FONT         figlet font name (default: slant)
-  --list-fonts            print all available font names and exit
+  -f, --font FONT         figlet font name or 3-digit number (default: slant)
+  --list-fonts [FILTER]   list fonts; use 'readable' to filter to clean-rendering fonts
+  --all                   render banner for every font (numbered header before each)
+  --width N               terminal width for line-wrapping (default: 80; 0 = never wrap)
 
 color options (mutually exclusive):
   --palette NAME          built-in palette: neon sunset ocean fire ice rainbow
@@ -27,7 +29,8 @@ color options (mutually exclusive):
   --direction DIR         gradient direction: lr|tb|bt|diag (default: lr)
 
 output options:
-  --save FILE             write ANSI escape file (cat-able)
+  --save FILE             write ANSI escape file (cat-able); parent dirs auto-created
+  --save-all DIR          save a banner per font into DIR as NNN-fontname.ans
   --export FILE           write self-contained shell function (.sh)
   --function-name NAME    function name for --export (default: show_banner)
   --no-color              plain text, no ANSI codes
@@ -43,9 +46,12 @@ info:
 # print to terminal
 color-banner "Fox and Dog" --palette neon --direction tb
 
-# save a cat-able ANSI file
-color-banner "Deploy v2" --palette fire --direction diag --save splash.ans
-cat splash.ans
+# widen the canvas to avoid line-wrapping with large fonts
+color-banner "Fox and Dog" --palette sunset --width 0
+
+# save a cat-able ANSI file (parent directories created automatically)
+color-banner "Deploy v2" --palette fire --direction diag --save .ci/banners/splash.ans
+cat .ci/banners/splash.ans
 
 # export a portable shell function for CI pipelines
 color-banner "Deploy v2" --palette fire --export splash.sh
@@ -59,9 +65,39 @@ color-banner "Hello" --font ogre --no-color
 
 # list all built-in palettes
 color-banner --list-palettes
+```
 
-# list all figlet fonts
+## Fonts
+
+pyfiglet ships 571 fonts. Use `--list-fonts` to browse them:
+
+```bash
+# all fonts with 3-digit index numbers
 color-banner --list-fonts
+
+# only the ~514 fonts that render cleanly on a standard terminal
+color-banner --list-fonts readable
+```
+
+Font numbers are stable — you can use them instead of the name with `--font`:
+
+```bash
+# these are equivalent
+color-banner "Hello" --font slant
+color-banner "Hello" --font 432
+```
+
+### Preview every font at once
+
+```bash
+# print all banners to stdout
+color-banner "Hello" --all --palette neon
+
+# save every font as a numbered .ans file for offline browsing
+color-banner "Hello" --palette neon --save-all ./font-preview
+ls font-preview/
+# 001-1943____.ans  002-1row.ans  003-3-d.ans …
+cat font-preview/432-slant.ans
 ```
 
 ## Embedding in a CI pipeline
