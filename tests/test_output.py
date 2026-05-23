@@ -105,6 +105,32 @@ def test_write_shell_export_passes_bash_syntax_check(tmp_path):
     assert result.returncode == 0, f"bash -n failed:\n{result.stderr}"
 
 
+def test_write_shell_export_no_command_substitution(tmp_path):
+    """base64 decode pipes directly to stdout — no $() to strip trailing newlines."""
+    out = tmp_path / "splash.sh"
+    write_shell_export(SAMPLE_LINES, str(out), VERSION)
+    content = out.read_text(encoding="utf-8")
+    assert "$(printf" not in content
+    assert "| base64 -d" in content
+
+
+def test_write_shell_export_preserves_trailing_newline(tmp_path):
+    """Banner output ends with a newline so the shell prompt appears on its own line."""
+    out = tmp_path / "splash.sh"
+    write_shell_export(SAMPLE_LINES, str(out), VERSION)
+    result = subprocess.run(["bash", str(out)], capture_output=True)
+    assert result.stdout.endswith(b"\n"), "banner output missing trailing newline"
+
+
+def test_write_shell_export_contains_base64_guard(tmp_path):
+    """Generated script checks base64 availability and returns 1 if missing."""
+    out = tmp_path / "splash.sh"
+    write_shell_export(SAMPLE_LINES, str(out), VERSION)
+    content = out.read_text(encoding="utf-8")
+    assert "command -v base64" in content
+    assert "return 1" in content
+
+
 def test_write_shell_export_invalid_function_name_raises(tmp_path):
     """write_shell_export rejects names that are not valid bash identifiers."""
     out = tmp_path / "splash.sh"

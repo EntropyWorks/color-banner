@@ -92,6 +92,14 @@ def test_export_produces_valid_shell(tmp_path):
     assert check.returncode == 0
 
 
+def test_export_output_ends_with_newline(tmp_path):
+    """Exported script output ends with a newline (prompt on its own line)."""
+    out = tmp_path / "splash.sh"
+    run(["Hi", "--palette", "neon", "--export", str(out)])
+    result = subprocess.run(["bash", str(out)], capture_output=True)
+    assert result.stdout.endswith(b"\n"), "banner output missing trailing newline"
+
+
 def test_export_custom_function_name(tmp_path):
     out = tmp_path / "splash.sh"
     result = run(
