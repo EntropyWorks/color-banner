@@ -25,3 +25,52 @@ def parse_hex(hex_str: str) -> tuple[int, int, int]:
     except ValueError:
         raise ValueError(f"invalid color '{hex_str}': expected #RRGGBB")
     return (r, g, b)
+
+
+def lerp_color(
+    c1: tuple[int, int, int],
+    c2: tuple[int, int, int],
+    t: float,
+) -> tuple[int, int, int]:
+    """Linearly interpolate between two RGB tuples at position t ∈ [0.0, 1.0]."""
+    return (
+        int(c1[0] + (c2[0] - c1[0]) * t),
+        int(c1[1] + (c2[1] - c1[1]) * t),
+        int(c1[2] + (c2[2] - c1[2]) * t),
+    )
+
+
+def gradient_color(t: float, stops: list[str]) -> tuple[int, int, int]:
+    """Map t ∈ [0.0, 1.0] to an RGB tuple across a list of hex color stops.
+
+    The stop list is divided into (len(stops) - 1) equal segments.
+    t is clamped to [0.0, 1.0].
+    """
+    t = max(0.0, min(1.0, t))
+    n = len(stops)
+    if n == 1:
+        return parse_hex(stops[0])
+    seg = (n - 1) * t
+    idx = min(int(seg), n - 2)
+    local_t = seg - idx
+    return lerp_color(parse_hex(stops[idx]), parse_hex(stops[idx + 1]), local_t)
+
+
+def resolve_stops(palette: str | None, gradient: list[str] | None) -> list[str]:
+    """Return the hex stop list from a palette name or raw gradient list.
+
+    Falls back to the 'neon' palette if both are None.
+    Raises ValueError for unknown palettes or invalid gradient specs.
+    """
+    if gradient is not None:
+        if len(gradient) < 2:
+            raise ValueError("--gradient requires at least 2 color stops")
+        for stop in gradient:
+            parse_hex(stop)  # validate up front; raises ValueError on bad input
+        return gradient
+    if palette is not None:
+        if palette not in PALETTES:
+            available = ", ".join(PALETTES.keys())
+            raise ValueError(f"unknown palette '{palette}'. Available: {available}")
+        return PALETTES[palette]
+    return PALETTES["neon"]
