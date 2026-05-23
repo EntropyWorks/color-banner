@@ -121,6 +121,7 @@ def test_write_ansi_files_all_creates_dir(tmp_path):
     write_ansi_files_all([], str(out_dir), "0.1.0")
     assert out_dir.is_dir()
 
+
 def test_write_ansi_files_all_creates_files(tmp_path):
     """write_ansi_files_all writes NNN-fontname.ans files."""
     out_dir = tmp_path / "out"
@@ -132,8 +133,9 @@ def test_write_ansi_files_all_creates_files(tmp_path):
     assert (out_dir / "001-slant.ans").exists()
     assert (out_dir / "042-ogre.ans").exists()
 
+
 def test_write_ansi_files_all_content(tmp_path):
-    """Each .ans file contains the banner lines and attribution."""
+    """Each .ans file contains the banner lines, attribution, and font header."""
     out_dir = tmp_path / "out"
     write_ansi_files_all(
         [(5, "banner", ["hello", "world"])], str(out_dir), "0.2.0"
@@ -142,3 +144,4 @@ def test_write_ansi_files_all_content(tmp_path):
     assert "hello" in content
     assert "world" in content
     assert "color-banner" in content
+    assert "# Font: banner (#005)" in content

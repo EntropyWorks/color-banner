@@ -51,31 +51,38 @@ def test_numbered_fonts_are_1_based():
     assert first_num == 1
     assert first_name == list_fonts()[0]
 
+
 def test_numbered_fonts_last_entry():
     fonts = numbered_fonts()
     last_num, last_name = fonts[-1]
     assert last_num == len(fonts)
     assert last_name == list_fonts()[-1]
 
+
 def test_resolve_font_identifier_by_name():
     assert resolve_font_identifier("slant") == "slant"
+
 
 def test_resolve_font_identifier_by_number_first():
     expected = list_fonts()[0]
     assert resolve_font_identifier("1") == expected
 
+
 def test_resolve_font_identifier_by_number_padded():
     expected = list_fonts()[0]
     assert resolve_font_identifier("001") == expected
+
 
 def test_resolve_font_identifier_by_number_last():
     fonts = list_fonts()
     assert resolve_font_identifier(str(len(fonts))) == fonts[-1]
 
+
 def test_resolve_font_identifier_out_of_range():
     total = len(list_fonts())
     with pytest.raises(ValueError, match="out of range"):
         resolve_font_identifier(str(total + 1))
+
 
 def test_resolve_font_identifier_zero_raises():
     with pytest.raises(ValueError, match="out of range"):

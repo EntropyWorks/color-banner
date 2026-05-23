@@ -173,6 +173,7 @@ def test_list_fonts_number_count():
     lines = result.stdout.strip().splitlines()
     assert len(lines) == len(list_fonts())
 
+
 def test_font_by_number():
     """--font 001 renders same as --font <first_font>."""
     from color_banner.renderer import list_fonts
@@ -181,11 +182,13 @@ def test_font_by_number():
     result_by_num = run(["Hello", "--font", "001", "--no-color"])
     assert result_by_num.stdout == result_by_name.stdout
 
+
 def test_font_by_zero_padded_number():
     """--font 001 matches --font 1."""
     result_1 = run(["Hello", "--font", "1", "--no-color"])
     result_001 = run(["Hello", "--font", "001", "--no-color"])
     assert result_1.stdout == result_001.stdout
+
 
 def test_font_by_number_out_of_range():
     """--font 9999 exits with code 1 and mentions 'out of range'."""
@@ -206,6 +209,7 @@ def test_all_flag_requires_text():
     result = run(["--all", "--no-color"])
     assert result.returncode == 1
     assert "TEXT is required" in result.stderr
+
 
 def test_all_flag_header_format():
     """--all output has '--- NNN fontname ---' headers for every font."""
@@ -234,6 +238,7 @@ def test_save_all_requires_text(tmp_path):
     result = run(["--save-all", str(out_dir)])
     assert result.returncode == 1
     assert "TEXT is required" in result.stderr
+
 
 def test_save_all_creates_deep_dirs(tmp_path):
     """--save-all auto-creates nested output directory."""
