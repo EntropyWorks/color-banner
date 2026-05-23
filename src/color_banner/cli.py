@@ -10,7 +10,12 @@ from color_banner import __version__
 from color_banner.color import PALETTES, resolve_stops
 from color_banner.output import write_ansi_file, write_ansi_files_all, write_shell_export, write_stdout
 from color_banner.painter import paint
-from color_banner.renderer import list_fonts, numbered_fonts, render, resolve_font_identifier
+from color_banner.renderer import (
+    numbered_fonts,
+    readable_fonts,
+    render,
+    resolve_font_identifier,
+)
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -26,8 +31,8 @@ def _build_parser() -> argparse.ArgumentParser:
         help="figlet font name (default: slant)",
     )
     font_group.add_argument(
-        "--list-fonts", action="store_true",
-        help="print all available font names and exit",
+        "--list-fonts", nargs="?", const="all", metavar="FILTER",
+        help="print font names and exit; use 'readable' to show only clean-rendering fonts",
     )
     font_group.add_argument(
         "--all", action="store_true",
@@ -86,8 +91,17 @@ def main() -> None:
     parser = _build_parser()
     args = parser.parse_args()
 
-    if args.list_fonts:
-        for num, name in numbered_fonts():
+    if args.list_fonts is not None:
+        _VALID_FILTERS = ("all", "readable")
+        if args.list_fonts not in _VALID_FILTERS:
+            print(
+                f"error: --list-fonts: unknown filter '{args.list_fonts}'. "
+                f"Valid options: readable, or omit for all.",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+        font_list = readable_fonts() if args.list_fonts == "readable" else numbered_fonts()
+        for num, name in font_list:
             print(f"{num:03d} {name}")
         return
 

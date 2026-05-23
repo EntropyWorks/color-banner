@@ -246,3 +246,49 @@ def test_save_all_creates_deep_dirs(tmp_path):
     result = run(["Hi", "--save-all", str(out_dir), "--no-color"])
     assert result.returncode == 0
     assert out_dir.is_dir()
+
+
+# --- --list-fonts readable ---
+
+def test_list_fonts_readable_is_subset():
+    """--list-fonts readable returns fewer fonts than --list-fonts."""
+    all_result = run(["--list-fonts"])
+    readable_result = run(["--list-fonts", "readable"])
+    assert readable_result.returncode == 0
+    all_lines = all_result.stdout.strip().splitlines()
+    readable_lines = readable_result.stdout.strip().splitlines()
+    assert len(readable_lines) < len(all_lines)
+
+
+def test_list_fonts_readable_excludes_doh():
+    """--list-fonts readable must not include 'doh' (75 rows)."""
+    result = run(["--list-fonts", "readable"])
+    assert "doh" not in result.stdout
+
+
+def test_list_fonts_readable_excludes_term():
+    """--list-fonts readable must not include 'term' (plain passthrough)."""
+    result = run(["--list-fonts", "readable"])
+    assert " term" not in result.stdout
+
+
+def test_list_fonts_readable_includes_slant():
+    """--list-fonts readable must include 'slant'."""
+    result = run(["--list-fonts", "readable"])
+    assert "slant" in result.stdout
+
+
+def test_list_fonts_readable_preserves_original_numbers():
+    """Numbers in --list-fonts readable match the full --list-fonts numbering."""
+    full = {line.split()[1]: line.split()[0]
+            for line in run(["--list-fonts"]).stdout.strip().splitlines()}
+    for line in run(["--list-fonts", "readable"]).stdout.strip().splitlines():
+        num, name = line.split(None, 1)
+        assert full[name] == num, f"{name}: expected {full[name]}, got {num}"
+
+
+def test_list_fonts_invalid_filter():
+    """--list-fonts with an unrecognised filter exits with code 1."""
+    result = run(["--list-fonts", "garbage"])
+    assert result.returncode == 1
+    assert "readable" in result.stderr

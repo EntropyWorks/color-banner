@@ -1,5 +1,12 @@
 import pytest
-from color_banner.renderer import list_fonts, numbered_fonts, render, resolve_font_identifier
+from color_banner.renderer import (
+    is_font_readable,
+    list_fonts,
+    numbered_fonts,
+    readable_fonts,
+    render,
+    resolve_font_identifier,
+)
 
 
 def test_render_returns_list_of_strings():
@@ -87,3 +94,70 @@ def test_resolve_font_identifier_out_of_range():
 def test_resolve_font_identifier_zero_raises():
     with pytest.raises(ValueError, match="out of range"):
         resolve_font_identifier("0")
+
+
+# --- is_font_readable ---
+
+def test_is_font_readable_slant():
+    """slant is a clean, standard font — must be readable."""
+    assert is_font_readable("slant") is True
+
+
+def test_is_font_readable_doh():
+    """doh renders 75 rows — must be unreadable (too tall)."""
+    assert is_font_readable("doh") is False
+
+
+def test_is_font_readable_term():
+    """term passes text through as a single short line — must be unreadable."""
+    assert is_font_readable("term") is False
+
+
+def test_is_font_readable_morse():
+    """morse outputs a single dot-dash line — must be unreadable."""
+    assert is_font_readable("morse") is False
+
+
+def test_is_font_readable_unknown_font():
+    """Unknown font name returns False (not raises)."""
+    assert is_font_readable("__not_a_real_font__") is False
+
+
+# --- readable_fonts ---
+
+def test_readable_fonts_is_subset_of_numbered():
+    """readable_fonts() is a strict subset of numbered_fonts()."""
+    all_nums = {n for n, _ in numbered_fonts()}
+    readable_nums = {n for n, _ in readable_fonts()}
+    assert readable_nums < all_nums
+
+
+def test_readable_fonts_excludes_doh():
+    """doh (too tall) must not appear in readable_fonts()."""
+    names = {name for _, name in readable_fonts()}
+    assert "doh" not in names
+
+
+def test_readable_fonts_excludes_term():
+    """term (plain passthrough) must not appear in readable_fonts()."""
+    names = {name for _, name in readable_fonts()}
+    assert "term" not in names
+
+
+def test_readable_fonts_includes_slant():
+    """slant must appear in readable_fonts()."""
+    names = {name for _, name in readable_fonts()}
+    assert "slant" in names
+
+
+def test_readable_fonts_includes_ogre():
+    """ogre must appear in readable_fonts()."""
+    names = {name for _, name in readable_fonts()}
+    assert "ogre" in names
+
+
+def test_readable_fonts_preserves_original_numbering():
+    """Numbers in readable_fonts() match the original 1-based positions from numbered_fonts()."""
+    num_map = {name: n for n, name in numbered_fonts()}
+    for n, name in readable_fonts():
+        assert n == num_map[name]
