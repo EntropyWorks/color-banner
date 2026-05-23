@@ -103,3 +103,12 @@ def test_write_shell_export_passes_bash_syntax_check(tmp_path):
         ["bash", "-n", str(out)], capture_output=True, text=True
     )
     assert result.returncode == 0, f"bash -n failed:\n{result.stderr}"
+
+
+def test_write_ansi_file_creates_parent_dirs(tmp_path):
+    """write_ansi_file creates parent directories automatically."""
+    deep_path = tmp_path / "a" / "b" / "c" / "banner.ans"
+    write_ansi_file(["line1", "line2"], str(deep_path), "0.1.0")
+    assert deep_path.exists()
+    content = deep_path.read_text()
+    assert "line1" in content
