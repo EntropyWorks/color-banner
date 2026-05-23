@@ -1,5 +1,5 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
-# Based on Calligraphy by GeopJr <https://codeberg.org/GeopJr/Calligraphy>
+# SPDX-License-Identifier: Apache-2.0
+# Inspired by Calligraphy by GeopJr <https://codeberg.org/GeopJr/Calligraphy>
 # Originally by Gregor "gregorni" Niehl
 from __future__ import annotations
 
@@ -9,8 +9,8 @@ from pathlib import Path
 
 _VALID_FUNCTION_NAME = re.compile(r"^[a-zA-Z_][a-zA-Z0-9_]*$")
 
-_ATTRIBUTION_LINE1 = "Based on Calligraphy by GeopJr <https://codeberg.org/GeopJr/Calligraphy>"
-_ATTRIBUTION_LINE2 = 'Originally by Gregor "gregorni" Niehl — Licensed under GPL v3'
+_ATTRIBUTION_LINE1 = "Inspired by Calligraphy by GeopJr <https://codeberg.org/GeopJr/Calligraphy>"
+_ATTRIBUTION_LINE2 = 'Originally by Gregor "gregorni" Niehl — Licensed under Apache 2.0'
 
 
 def write_stdout(lines: list[str]) -> None:

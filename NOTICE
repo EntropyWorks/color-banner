@@ -1,0 +1,24 @@
+color-banner
+============
+
+This product is licensed under the Apache License, Version 2.0.
+See the LICENSE file for the full license text.
+
+
+Third-party attributions
+------------------------
+
+This product is inspired by Calligraphy by GeopJr
+<https://codeberg.org/GeopJr/Calligraphy>, originally by Gregor
+"gregorni" Niehl. Calligraphy is licensed under GPL v3. No Calligraphy
+source code is incorporated in this project.
+
+This product uses pyfiglet <https://github.com/pwaller/pyfiglet>,
+Copyright (c) 2007-2018 Christopher Jones, Stefano Rivera, Peter Waller,
+and contributors. Licensed under the MIT License.
+
+pyfiglet is itself a port of FIGlet <http://www.figlet.org/>,
+originally created by Glenn Chappell and Ian Chai (1991), maintained
+by the FIGlet project. The bundled FIGlet fonts and the .flf font
+format originate from the FIGlet project; each font carries its own
+permissive license header within the font file.

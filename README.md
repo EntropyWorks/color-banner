@@ -1,9 +1,9 @@
 # color-banner
 
 > Built on the shoulders of [FIGlet](http://www.figlet.org/) (Glenn Chappell & Ian Chai, 1991),
-> [pyfiglet](https://github.com/pwaller/pyfiglet) (Peter Waller), and
+> [pyfiglet](https://github.com/pwaller/pyfiglet) (Christopher Jones, Stefano Rivera, Peter Waller), and
 > [Calligraphy](https://codeberg.org/GeopJr/Calligraphy) (GeopJr / Gregor "gregorni" Niehl).
-> Licensed under GPL v3.
+> Licensed under Apache 2.0.
 
 Render text as colorful 24-bit figlet ASCII banners in the terminal.
 Designed for CICD pipelines, shell startup screens, and BBS-style splash screens.
@@ -119,7 +119,7 @@ show_banner
 
 ## License
 
-GPL v3 — see [LICENSE](LICENSE) and [CREDITS.md](CREDITS.md).
+Apache 2.0 — see [LICENSE](LICENSE), [NOTICE](NOTICE), and [CREDITS.md](CREDITS.md).
 
 ## Credits
 

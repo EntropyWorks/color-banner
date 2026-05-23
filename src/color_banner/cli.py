@@ -1,5 +1,5 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
-# Based on Calligraphy by GeopJr <https://codeberg.org/GeopJr/Calligraphy>
+# SPDX-License-Identifier: Apache-2.0
+# Inspired by Calligraphy by GeopJr <https://codeberg.org/GeopJr/Calligraphy>
 # Originally by Gregor "gregorni" Niehl
 from __future__ import annotations
 
