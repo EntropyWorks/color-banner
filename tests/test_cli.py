@@ -128,4 +128,30 @@ def test_gradient_single_stop_exits_nonzero():
 
 def test_missing_text_exits_nonzero():
     result = run([])
-    assert result.returncode != 0
+    assert result.returncode == 1
+    assert "TEXT is required" in result.stderr
+
+
+def test_piped_stdout_strips_ansi_codes():
+    # When stdout is piped (non-TTY), ANSI codes should be auto-stripped.
+    # subprocess.run with capture_output=True is always non-TTY.
+    # Use --palette without --no-color to confirm TTY detection (not the flag) strips it.
+    result = run(["Hello", "--palette", "neon"])
+    assert result.returncode == 0
+    assert "\x1b[" not in result.stdout
+
+
+def test_save_and_export_simultaneously(tmp_path):
+    ans_out = tmp_path / "banner.ans"
+    sh_out = tmp_path / "splash.sh"
+    result = run([
+        "Hi", "--palette", "neon",
+        "--save", str(ans_out),
+        "--export", str(sh_out),
+    ])
+    assert result.returncode == 0
+    assert ans_out.exists()
+    assert sh_out.exists()
+    assert "\x1b[38;2;" in ans_out.read_text(encoding="utf-8")
+    check = subprocess.run(["bash", "-n", str(sh_out)], capture_output=True, text=True)
+    assert check.returncode == 0

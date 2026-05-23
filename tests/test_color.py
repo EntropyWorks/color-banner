@@ -113,6 +113,11 @@ def test_resolve_stops_gradient_single_stop_raises():
         resolve_stops(None, ["#ff0000"])
 
 
+def test_resolve_stops_gradient_too_many_stops_raises():
+    with pytest.raises(ValueError, match="at most 8 color stops"):
+        resolve_stops(None, ["#ff0000"] * 9)
+
+
 def test_resolve_stops_gradient_invalid_hex_raises():
     with pytest.raises(ValueError, match="expected #RRGGBB"):
         resolve_stops(None, ["#ff0000", "bad"])

@@ -88,7 +88,8 @@ def main() -> None:
         return
 
     if not args.text:
-        parser.error("TEXT is required")
+        print("error: TEXT is required", file=sys.stderr)
+        sys.exit(1)
 
     # Resolve color stops — args.gradient is list[str] | None (nargs="+")
     try:

@@ -65,6 +65,8 @@ def resolve_stops(palette: str | None, gradient: list[str] | None) -> list[str]:
     if gradient is not None:
         if len(gradient) < 2:
             raise ValueError("--gradient requires at least 2 color stops")
+        if len(gradient) > 8:
+            raise ValueError("--gradient accepts at most 8 color stops")
         for stop in gradient:
             parse_hex(stop)  # validate up front; raises ValueError on bad input
         return gradient
