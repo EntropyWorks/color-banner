@@ -5,3 +5,11 @@ __pycache__/
 dist/
 .superpowers/
 .worktrees/
+output-check/
+preview-mix/
+preview-caps/
+preview-lower/
+examples/
+*.ans
+*.swp
+not-readable-by-me.txt
