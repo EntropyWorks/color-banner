@@ -1,7 +1,9 @@
 # color-banner
 
-> Inspired by [Calligraphy](https://codeberg.org/GeopJr/Calligraphy) by GeopJr
-> and originally by Gregor "gregorni" Niehl. Licensed under GPL v3.
+> Built on the shoulders of [FIGlet](http://www.figlet.org/) (Glenn Chappell & Ian Chai, 1991),
+> [pyfiglet](https://github.com/pwaller/pyfiglet) (Peter Waller), and
+> [Calligraphy](https://codeberg.org/GeopJr/Calligraphy) (GeopJr / Gregor "gregorni" Niehl).
+> Licensed under GPL v3.
 
 Render text as colorful 24-bit figlet ASCII banners in the terminal.
 Designed for CICD pipelines, shell startup screens, and BBS-style splash screens.
@@ -118,3 +120,16 @@ show_banner
 ## License
 
 GPL v3 — see [LICENSE](LICENSE) and [CREDITS.md](CREDITS.md).
+
+## Credits
+
+The rendering engine is [pyfiglet](https://github.com/pwaller/pyfiglet) by Peter Waller,
+a pure-Python port of [FIGlet](http://www.figlet.org/) — the original ASCII art renderer
+created by Glenn Chappell and Ian Chai in 1991. The 571 bundled fonts and the `.flf` font
+format originate from the FIGlet project.
+
+The concept and design are inspired by
+[Calligraphy](https://codeberg.org/GeopJr/Calligraphy) by GeopJr,
+originally by Gregor "gregorni" Niehl.
+
+See [CREDITS.md](CREDITS.md) for full details.
