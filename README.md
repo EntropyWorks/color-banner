@@ -132,4 +132,5 @@ The concept and design are inspired by
 [Calligraphy](https://codeberg.org/GeopJr/Calligraphy) by GeopJr,
 originally by Gregor "gregorni" Niehl.
 
-See [CREDITS.md](CREDITS.md) for full details.
+See [CREDITS.md](CREDITS.md) for full details and [NOTICE](NOTICE) for the
+third-party attribution notices required by Apache 2.0.
