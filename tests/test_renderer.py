@@ -161,3 +161,34 @@ def test_readable_fonts_preserves_original_numbering():
     num_map = {name: n for n, name in numbered_fonts()}
     for n, name in readable_fonts():
         assert n == num_map[name]
+
+
+# --- render() width parameter ---
+
+def test_render_default_width_is_80():
+    """render() at default width=80 wraps long text; width=200 keeps it on one pass."""
+    # 'block' font renders 'Hello World' as ~90 chars wide — wraps at 80, fits at 200
+    rows_80 = render("Hello World", font="block")
+    rows_wide = render("Hello World", font="block", width=200)
+    assert len(rows_80) > len(rows_wide)
+
+
+def test_render_narrow_width_increases_row_count():
+    """render() with a narrow width produces more rows than the default."""
+    rows_default = render("Hello World", font="big")
+    rows_narrow = render("Hello World", font="big", width=40)
+    assert len(rows_narrow) > len(rows_default)
+
+
+def test_render_width_zero_means_no_wrap():
+    """render() with width=0 never wraps (same result as very large width)."""
+    rows_nowrap = render("Hello World", font="big", width=0)
+    rows_huge = render("Hello World", font="big", width=32767)
+    assert rows_nowrap == rows_huge
+
+
+def test_render_width_does_not_change_short_text():
+    """Short text that fits in 80 cols is unaffected by wider width."""
+    rows_default = render("Hi", font="slant")
+    rows_wide = render("Hi", font="slant", width=200)
+    assert rows_default == rows_wide

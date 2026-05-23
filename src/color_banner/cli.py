@@ -38,6 +38,10 @@ def _build_parser() -> argparse.ArgumentParser:
         "--all", action="store_true",
         help="render banner for every available font (prints header before each)",
     )
+    font_group.add_argument(
+        "--width", type=int, default=80, metavar="N",
+        help="terminal width for line-wrapping (default: 80; 0 = never wrap)",
+    )
 
     color_group = parser.add_argument_group("color options")
     mx = color_group.add_mutually_exclusive_group()
@@ -91,6 +95,11 @@ def main() -> None:
     parser = _build_parser()
     args = parser.parse_args()
 
+    # Validate --width early so it applies to all code paths
+    if args.width < 0:
+        print("error: --width must be 0 (no wrap) or a positive integer", file=sys.stderr)
+        sys.exit(1)
+
     if args.list_fonts is not None:
         _VALID_FILTERS = ("all", "readable")
         if args.list_fonts not in _VALID_FILTERS:
@@ -123,7 +132,7 @@ def main() -> None:
         for num, font_name in numbered_fonts():
             print(f"--- {num:03d} {font_name} ---")
             try:
-                rows = render(args.text, font=font_name)
+                rows = render(args.text, font=font_name, width=args.width)
             except ValueError:
                 continue
             lines = paint(rows, stops, args.direction, no_color=stdout_no_color)
@@ -143,7 +152,7 @@ def main() -> None:
         font_banners = []
         for num, font_name in numbered_fonts():
             try:
-                rows = render(args.text, font=font_name)
+                rows = render(args.text, font=font_name, width=args.width)
             except ValueError:
                 continue
             lines = paint(rows, stops, args.direction, no_color=args.no_color)
@@ -175,7 +184,7 @@ def main() -> None:
 
     # Render ASCII art
     try:
-        rows = render(args.text, font=font)
+        rows = render(args.text, font=font, width=args.width)
     except ValueError as exc:
         print(f"error: {exc}", file=sys.stderr)
         sys.exit(1)

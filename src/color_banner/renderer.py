@@ -6,14 +6,24 @@ from __future__ import annotations
 import pyfiglet
 
 
-def render(text: str, font: str = "slant") -> list[str]:
+_NO_WRAP_WIDTH = 32767  # pyfiglet's practical maximum; used when width=0
+
+
+def render(text: str, font: str = "slant", width: int = 80) -> list[str]:
     """Render text as figlet ASCII art rows.
 
     Returns a list of strings (one per row) with trailing empty rows stripped.
     Raises ValueError for unknown font names.
+
+    Args:
+        text: The text to render.
+        font: Figlet font name (default ``"slant"``).
+        width: Terminal width in columns at which figlet wraps long text.
+               Pass ``0`` to disable wrapping entirely.
     """
+    actual_width = _NO_WRAP_WIDTH if width == 0 else width
     try:
-        raw = pyfiglet.figlet_format(text, font=font)
+        raw = pyfiglet.figlet_format(text, font=font, width=actual_width)
     except pyfiglet.FontNotFound:
         raise ValueError(
             f"unknown font '{font}'. Run --list-fonts to see available fonts"

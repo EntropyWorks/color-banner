@@ -292,3 +292,42 @@ def test_list_fonts_invalid_filter():
     result = run(["--list-fonts", "garbage"])
     assert result.returncode == 1
     assert "readable" in result.stderr
+
+
+# --- --width ---
+
+def test_width_flag_prevents_wrapping(tmp_path):
+    """--width 200 prevents line-wrapping that occurs at the default 80."""
+    # 'block' font renders 'Hello World' wider than 80 cols — wraps by default
+    out_80 = tmp_path / "w80.ans"
+    out_200 = tmp_path / "w200.ans"
+    run(["Hello World", "--font", "block", "--no-color", "--save", str(out_80)])
+    run(["Hello World", "--font", "block", "--no-color", "--width", "200", "--save", str(out_200)])
+    lines_80 = [l for l in out_80.read_text().splitlines() if not l.startswith("#") and l.strip()]
+    lines_200 = [l for l in out_200.read_text().splitlines() if not l.startswith("#") and l.strip()]
+    assert len(lines_80) > len(lines_200)
+
+
+def test_width_zero_never_wraps(tmp_path):
+    """--width 0 produces same output as --width 32767."""
+    out_0 = tmp_path / "w0.ans"
+    out_huge = tmp_path / "whuge.ans"
+    run(["Hello World", "--font", "block", "--no-color", "--width", "0", "--save", str(out_0)])
+    run(["Hello World", "--font", "block", "--no-color", "--width", "32767", "--save", str(out_huge)])
+    # Strip headers and compare content lines
+    def content_lines(p):
+        return [l for l in p.read_text().splitlines() if not l.startswith("#")]
+    assert content_lines(out_0) == content_lines(out_huge)
+
+
+def test_width_invalid_value():
+    """--width with a non-integer value exits with code 2 (argparse error)."""
+    result = run(["Hello", "--width", "abc"])
+    assert result.returncode == 2
+
+
+def test_width_negative_value():
+    """--width with a negative number exits with code 1."""
+    result = run(["Hello", "--width", "-5"])
+    assert result.returncode == 1
+    assert "width" in result.stderr
