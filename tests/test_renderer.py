@@ -118,6 +118,19 @@ def test_is_font_readable_morse():
     assert is_font_readable("morse") is False
 
 
+def test_is_font_readable_eftipiti():
+    """eftipiti only has uppercase glyphs — must be readable (rescued by HELLO WORLD)."""
+    assert is_font_readable("eftipiti") is True
+
+
+def test_is_font_readable_all_three_phrases_checked():
+    """A font unreadable with mixed but readable with upper is marked readable."""
+    # eftipiti: 2 rows with 'Hello World', 3 rows with 'HELLO WORLD'
+    from color_banner.renderer import render, _rows_pass_thresholds
+    assert not _rows_pass_thresholds(render("Hello World", font="eftipiti"))
+    assert _rows_pass_thresholds(render("HELLO WORLD", font="eftipiti"))
+
+
 def test_is_font_readable_unknown_font():
     """Unknown font name returns False (not raises)."""
     assert is_font_readable("__not_a_real_font__") is False

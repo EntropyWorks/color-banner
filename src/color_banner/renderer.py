@@ -45,35 +45,20 @@ def numbered_fonts() -> list[tuple[int, str]]:
 
 
 # Thresholds used by is_font_readable().  Tuned against pyfiglet's full font
-# catalogue using "Hello World" as the test phrase.
-_READABILITY_TEST_TEXT = "Hello World"
+# catalogue across three test phrases (mixed, upper, lower case).
+_READABILITY_TEST_PHRASES = (
+    "Hello World",  # mixed case
+    "HELLO WORLD",  # all caps  — catches fonts with uppercase glyphs only
+    "hello world",  # all lower — catches fonts with lowercase glyphs only
+)
 _READABLE_MIN_ROWS = 3    # single/two-liners are encoding fonts (morse, binary…)
 _READABLE_MAX_ROWS = 25   # anything taller scrolls off a standard terminal
 _READABLE_MAX_WIDTH = 200  # wider than this wraps on most terminals
 _READABLE_MIN_DENSITY = 0.05  # ratio of non-space chars; below this is near-empty
 
 
-def is_font_readable(font_name: str) -> bool:
-    """Return True if *font_name* produces a clean, terminal-friendly banner.
-
-    Renders :data:`_READABILITY_TEST_TEXT` and checks:
-
-    * **Row count** — between :data:`_READABLE_MIN_ROWS` and
-      :data:`_READABLE_MAX_ROWS` (inclusive).  Fonts below the minimum are
-      typically encoding pass-throughs (morse, binary, hex); fonts above the
-      maximum scroll off any standard terminal before finishing.
-    * **Width** — at most :data:`_READABLE_MAX_WIDTH` characters.  Wider
-      output wraps on standard 80- or 120-column terminals.
-    * **Density** — at least :data:`_READABLE_MIN_DENSITY` of the total
-      character cells are non-space.  Near-empty output means the font
-      doesn't support the test characters.
-
-    Returns ``False`` for unknown font names instead of raising.
-    """
-    try:
-        rows = render(_READABILITY_TEST_TEXT, font=font_name)
-    except ValueError:
-        return False
+def _rows_pass_thresholds(rows: list[str]) -> bool:
+    """Return True if *rows* meet all readability thresholds."""
     if not rows:
         return False
     widths = [len(r) for r in rows]
@@ -87,6 +72,37 @@ def is_font_readable(font_name: str) -> bool:
         and max_w <= _READABLE_MAX_WIDTH
         and density >= _READABLE_MIN_DENSITY
     )
+
+
+def is_font_readable(font_name: str) -> bool:
+    """Return True if *font_name* produces a clean, terminal-friendly banner.
+
+    Tests each phrase in :data:`_READABILITY_TEST_PHRASES` (mixed, upper, and
+    lower case) and returns ``True`` as soon as any phrase passes all checks:
+
+    * **Row count** — between :data:`_READABLE_MIN_ROWS` and
+      :data:`_READABLE_MAX_ROWS` (inclusive).  Fonts below the minimum are
+      typically encoding pass-throughs (morse, binary, hex); fonts above the
+      maximum scroll off any standard terminal before finishing.
+    * **Width** — at most :data:`_READABLE_MAX_WIDTH` characters.  Wider
+      output wraps on standard 80- or 120-column terminals.
+    * **Density** — at least :data:`_READABLE_MIN_DENSITY` of the total
+      character cells are non-space.  Near-empty output means the font
+      doesn't support the test characters.
+
+    Testing all three case variants ensures fonts that only have uppercase or
+    only lowercase glyphs are not incorrectly excluded.
+
+    Returns ``False`` for unknown font names instead of raising.
+    """
+    for phrase in _READABILITY_TEST_PHRASES:
+        try:
+            rows = render(phrase, font=font_name)
+        except ValueError:
+            return False
+        if _rows_pass_thresholds(rows):
+            return True
+    return False
 
 
 def readable_fonts() -> list[tuple[int, str]]:
