@@ -27,3 +27,27 @@ def render(text: str, font: str = "slant") -> list[str]:
 def list_fonts() -> list[str]:
     """Return all available pyfiglet font names, sorted alphabetically."""
     return sorted(pyfiglet.FigletFont.getFonts())
+
+
+def numbered_fonts() -> list[tuple[int, str]]:
+    """Return (number, font_name) pairs, 1-based, sorted alphabetically."""
+    return [(i + 1, name) for i, name in enumerate(list_fonts())]
+
+
+def resolve_font_identifier(identifier: str) -> str:
+    """Resolve a font name or numeric string to a font name.
+
+    If identifier is all digits, treat as 1-based index into sorted font list.
+    Otherwise return unchanged (font name validation happens in render()).
+    Raises ValueError if number is out of range.
+    """
+    if identifier.isdigit():
+        n = int(identifier)
+        fonts = list_fonts()
+        if not 1 <= n <= len(fonts):
+            raise ValueError(
+                f"font number {n} out of range (1-{len(fonts)}). "
+                "Run --list-fonts to see available fonts"
+            )
+        return fonts[n - 1]
+    return identifier

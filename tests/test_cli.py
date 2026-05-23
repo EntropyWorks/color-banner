@@ -155,3 +155,89 @@ def test_save_and_export_simultaneously(tmp_path):
     assert "\x1b[38;2;" in ans_out.read_text(encoding="utf-8")
     check = subprocess.run(["bash", "-n", str(sh_out)], capture_output=True, text=True)
     assert check.returncode == 0
+
+
+def test_list_fonts_numbered_format():
+    """--list-fonts prints '001 fontname' format."""
+    result = run(["--list-fonts"])
+    lines = result.stdout.strip().splitlines()
+    assert lines[0].startswith("001 ")
+    from color_banner.renderer import list_fonts
+    total = len(list_fonts())
+    assert lines[-1].startswith(f"{total:03d} ")
+
+def test_list_fonts_number_count():
+    """--list-fonts line count equals total pyfiglet fonts."""
+    from color_banner.renderer import list_fonts
+    result = run(["--list-fonts"])
+    lines = result.stdout.strip().splitlines()
+    assert len(lines) == len(list_fonts())
+
+def test_font_by_number():
+    """--font 001 renders same as --font <first_font>."""
+    from color_banner.renderer import list_fonts
+    first_font = list_fonts()[0]
+    result_by_name = run(["Hello", "--font", first_font, "--no-color"])
+    result_by_num = run(["Hello", "--font", "001", "--no-color"])
+    assert result_by_num.stdout == result_by_name.stdout
+
+def test_font_by_zero_padded_number():
+    """--font 001 matches --font 1."""
+    result_1 = run(["Hello", "--font", "1", "--no-color"])
+    result_001 = run(["Hello", "--font", "001", "--no-color"])
+    assert result_1.stdout == result_001.stdout
+
+def test_font_by_number_out_of_range():
+    """--font 9999 exits with code 1 and mentions 'out of range'."""
+    result = run(["Hello", "--font", "9999"])
+    assert result.returncode == 1
+    assert "out of range" in result.stderr
+
+
+def test_all_flag_renders_multiple_fonts():
+    """--all renders banners for all fonts."""
+    result = run(["Hi", "--all", "--no-color"])
+    assert result.returncode == 0
+    assert "--- 001 " in result.stdout
+    assert "--- 002 " in result.stdout
+
+def test_all_flag_requires_text():
+    """--all without TEXT exits with code 1."""
+    result = run(["--all", "--no-color"])
+    assert result.returncode == 1
+    assert "TEXT is required" in result.stderr
+
+def test_all_flag_header_format():
+    """--all output has '--- NNN fontname ---' headers for every font."""
+    result = run(["X", "--all", "--no-color"])
+    lines = result.stdout.splitlines()
+    headers = [l for l in lines if l.startswith("--- ") and l.endswith(" ---")]
+    from color_banner.renderer import list_fonts
+    assert len(headers) == len(list_fonts())
+    assert headers[0].startswith("--- 001 ")
+    assert headers[0].endswith(" ---")
+
+
+def test_save_all_creates_files(tmp_path):
+    """--save-all DIR creates NNN-fontname.ans files."""
+    out_dir = tmp_path / "all_banners"
+    result = run(["Hi", "--save-all", str(out_dir), "--no-color"])
+    assert result.returncode == 0
+    files = sorted(out_dir.glob("*.ans"))
+    from color_banner.renderer import list_fonts
+    assert len(files) == len(list_fonts())
+    assert files[0].name.startswith("001-")
+
+def test_save_all_requires_text(tmp_path):
+    """--save-all without TEXT exits with code 1."""
+    out_dir = tmp_path / "banners"
+    result = run(["--save-all", str(out_dir)])
+    assert result.returncode == 1
+    assert "TEXT is required" in result.stderr
+
+def test_save_all_creates_deep_dirs(tmp_path):
+    """--save-all auto-creates nested output directory."""
+    out_dir = tmp_path / "a" / "b" / "c" / "banners"
+    result = run(["Hi", "--save-all", str(out_dir), "--no-color"])
+    assert result.returncode == 0
+    assert out_dir.is_dir()

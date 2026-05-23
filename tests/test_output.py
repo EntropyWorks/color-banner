@@ -4,7 +4,7 @@ import subprocess
 
 import pytest
 
-from color_banner.output import write_ansi_file, write_shell_export, write_stdout
+from color_banner.output import write_ansi_file, write_ansi_files_all, write_shell_export, write_stdout
 
 SAMPLE_LINES = [
     "\x1b[38;2;255;0;0mH\x1b[0m",
@@ -112,3 +112,33 @@ def test_write_ansi_file_creates_parent_dirs(tmp_path):
     assert deep_path.exists()
     content = deep_path.read_text()
     assert "line1" in content
+
+
+def test_write_ansi_files_all_creates_dir(tmp_path):
+    """write_ansi_files_all creates the output directory if missing."""
+    out_dir = tmp_path / "banners"
+    assert not out_dir.exists()
+    write_ansi_files_all([], str(out_dir), "0.1.0")
+    assert out_dir.is_dir()
+
+def test_write_ansi_files_all_creates_files(tmp_path):
+    """write_ansi_files_all writes NNN-fontname.ans files."""
+    out_dir = tmp_path / "out"
+    font_banners = [
+        (1, "slant", ["line1", "line2"]),
+        (42, "ogre", ["banner42"]),
+    ]
+    write_ansi_files_all(font_banners, str(out_dir), "0.1.0")
+    assert (out_dir / "001-slant.ans").exists()
+    assert (out_dir / "042-ogre.ans").exists()
+
+def test_write_ansi_files_all_content(tmp_path):
+    """Each .ans file contains the banner lines and attribution."""
+    out_dir = tmp_path / "out"
+    write_ansi_files_all(
+        [(5, "banner", ["hello", "world"])], str(out_dir), "0.2.0"
+    )
+    content = (out_dir / "005-banner.ans").read_text()
+    assert "hello" in content
+    assert "world" in content
+    assert "color-banner" in content

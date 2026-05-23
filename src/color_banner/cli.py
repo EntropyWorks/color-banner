@@ -8,9 +8,9 @@ import sys
 
 from color_banner import __version__
 from color_banner.color import PALETTES, resolve_stops
-from color_banner.output import write_ansi_file, write_shell_export, write_stdout
+from color_banner.output import write_ansi_file, write_ansi_files_all, write_shell_export, write_stdout
 from color_banner.painter import paint
-from color_banner.renderer import list_fonts, render
+from color_banner.renderer import list_fonts, numbered_fonts, render, resolve_font_identifier
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -28,6 +28,10 @@ def _build_parser() -> argparse.ArgumentParser:
     font_group.add_argument(
         "--list-fonts", action="store_true",
         help="print all available font names and exit",
+    )
+    font_group.add_argument(
+        "--all", action="store_true",
+        help="render banner for every available font (prints header before each)",
     )
 
     color_group = parser.add_argument_group("color options")
@@ -49,6 +53,10 @@ def _build_parser() -> argparse.ArgumentParser:
     out_group.add_argument(
         "--save", metavar="FILE",
         help="write ANSI escape file (cat-able)",
+    )
+    out_group.add_argument(
+        "--save-all", metavar="DIR",
+        help="save banner for every font into DIR as NNN-fontname.ans",
     )
     out_group.add_argument(
         "--export", metavar="FILE",
@@ -79,12 +87,58 @@ def main() -> None:
     args = parser.parse_args()
 
     if args.list_fonts:
-        print("\n".join(list_fonts()))
+        for num, name in numbered_fonts():
+            print(f"{num:03d} {name}")
         return
 
     if args.list_palettes:
         for name, stops in PALETTES.items():
             print(f"{name}: {' -> '.join(stops)}")
+        return
+
+    if args.all:
+        if not args.text:
+            print("error: TEXT is required", file=sys.stderr)
+            sys.exit(1)
+        try:
+            stops = resolve_stops(args.palette, args.gradient)
+        except ValueError as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            sys.exit(1)
+        stdout_no_color = args.no_color or not sys.stdout.isatty()
+        for num, font_name in numbered_fonts():
+            print(f"--- {num:03d} {font_name} ---")
+            try:
+                rows = render(args.text, font=font_name)
+            except ValueError:
+                continue
+            lines = paint(rows, stops, args.direction, no_color=stdout_no_color)
+            write_stdout(lines)
+            print()
+        return
+
+    if args.save_all:
+        if not args.text:
+            print("error: TEXT is required", file=sys.stderr)
+            sys.exit(1)
+        try:
+            stops = resolve_stops(args.palette, args.gradient)
+        except ValueError as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            sys.exit(1)
+        font_banners = []
+        for num, font_name in numbered_fonts():
+            try:
+                rows = render(args.text, font=font_name)
+            except ValueError:
+                continue
+            lines = paint(rows, stops, args.direction, no_color=args.no_color)
+            font_banners.append((num, font_name, lines))
+        try:
+            write_ansi_files_all(font_banners, args.save_all, __version__)
+        except OSError as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            sys.exit(1)
         return
 
     if not args.text:
@@ -98,9 +152,16 @@ def main() -> None:
         print(f"error: {exc}", file=sys.stderr)
         sys.exit(1)
 
+    # Resolve font number or name
+    try:
+        font = resolve_font_identifier(args.font)
+    except ValueError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        sys.exit(1)
+
     # Render ASCII art
     try:
-        rows = render(args.text, font=args.font)
+        rows = render(args.text, font=font)
     except ValueError as exc:
         print(f"error: {exc}", file=sys.stderr)
         sys.exit(1)
