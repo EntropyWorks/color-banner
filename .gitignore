@@ -9,7 +9,7 @@ output-check/
 preview-mix/
 preview-caps/
 preview-lower/
-examples/
+/examples/
 *.ans
 *.swp
 not-readable-by-me.txt
