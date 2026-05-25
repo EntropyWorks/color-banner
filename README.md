@@ -11,6 +11,7 @@
 Render text as colorful 24-bit figlet ASCII banners in the terminal.
 Designed for CICD pipelines, shell startup screens, and BBS-style splash screens.
 
+- [Requirements](#requirements)
 - [Install](#install)
 - [Usage](#usage)
 - [Examples](#examples)
@@ -19,6 +20,13 @@ Designed for CICD pipelines, shell startup screens, and BBS-style splash screens
 - [Gallery](#gallery)
 - [License](#license)
 - [Credits](#credits)
+
+## Requirements
+
+- **Python 3.11+**
+- **[pyfiglet](https://github.com/pwaller/pyfiglet) ≥ 1.0.2** — installed automatically as a dependency
+- **A 24-bit colour terminal** — required for gradients to render correctly; most modern terminal emulators (iTerm2, GNOME Terminal, Windows Terminal, kitty, Alacritty, etc.) support this; classic xterm and some CI log viewers do not
+- **`base64`** (GNU coreutils or macOS built-in) — only needed for the `--export` feature; not required for normal use
 
 ## Install
 
