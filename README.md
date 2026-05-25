@@ -147,6 +147,13 @@ show_banner
 Each section below shows all six built-in palettes rendered with that font.
 Click a font name to expand.
 
+> **Note:** This is a small sample of the 571 bundled fonts — many others produce
+> great results too. Not every font works well with color-banner; some render
+> cleanly only with uppercase input, and others may produce garbled output
+> regardless. Use `--list-fonts readable` to get a pre-filtered list of fonts
+> that tend to render reliably. (Work is ongoing to improve the readability
+> filter so it catches more edge cases, including uppercase-only fonts.)
+
 <details>
 <summary><strong>ansi_regular</strong></summary>
 
