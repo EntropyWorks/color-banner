@@ -9,6 +9,11 @@ dependencies = [
     "pyfiglet>=1.0.2",
 ]
 
+[project.urls]
+Homepage = "https://github.com/EntropyWorks/color-banner"
+Repository = "https://github.com/EntropyWorks/color-banner"
+Issues = "https://github.com/EntropyWorks/color-banner/issues"
+
 [project.scripts]
 color-banner = "color_banner.cli:main"
 

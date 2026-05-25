@@ -39,7 +39,7 @@ uv tool install color-banner
 **From source** (local development):
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/EntropyWorks/color-banner
 cd color-banner
 uv tool install --editable .
 ```
