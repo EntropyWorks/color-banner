@@ -4,6 +4,9 @@ version = "0.1.0"
 description = "Colorful figlet ASCII banners for terminals, CICD pipelines, and shell splash screens"
 readme = "README.md"
 license = { text = "Apache-2.0" }
+authors = [
+    { name = "Yazz Atlas", email = "entropyworks@gmail.com" },
+]
 requires-python = ">=3.11"
 dependencies = [
     "pyfiglet>=1.0.2",
