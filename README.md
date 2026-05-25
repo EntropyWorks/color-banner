@@ -1,6 +1,8 @@
-![color-banner](assets/banner.png)
-
 # color-banner
+
+<p align="center">
+  <img src="assets/banner.png" alt="color-banner">
+</p>
 > Built on the shoulders of [FIGlet](http://www.figlet.org/) (Glenn Chappell & Ian Chai, 1991),
 > [pyfiglet](https://github.com/pwaller/pyfiglet) (Christopher Jones, Stefano Rivera, Peter Waller), and
 > [Calligraphy](https://codeberg.org/GeopJr/Calligraphy) (GeopJr / Gregor "gregorni" Niehl).
