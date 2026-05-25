@@ -5,7 +5,7 @@
 > [Calligraphy](https://codeberg.org/GeopJr/Calligraphy) (GeopJr / Gregor "gregorni" Niehl).
 > Licensed under Apache 2.0.
 
-![color-banner](assets/banner.png)
+![color-banner](assets/examples/future_neon.png)
 
 Render text as colorful 24-bit figlet ASCII banners in the terminal.
 Designed for CICD pipelines, shell startup screens, and BBS-style splash screens.
