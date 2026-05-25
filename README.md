@@ -10,6 +10,15 @@
 Render text as colorful 24-bit figlet ASCII banners in the terminal.
 Designed for CICD pipelines, shell startup screens, and BBS-style splash screens.
 
+- [Install](#install)
+- [Usage](#usage)
+- [Examples](#examples)
+- [Fonts](#fonts)
+- [Embedding in a CI pipeline](#embedding-in-a-ci-pipeline)
+- [Gallery](#gallery)
+- [License](#license)
+- [Credits](#credits)
+
 ## Install
 
 **From PyPI** (once published):
