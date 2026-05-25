@@ -10,9 +10,23 @@ Designed for CICD pipelines, shell startup screens, and BBS-style splash screens
 
 ## Install
 
+**From PyPI** (once published):
+
 ```bash
 uv tool install color-banner
 ```
+
+**From source** (local development):
+
+```bash
+git clone <repo-url>
+cd color-banner
+uv tool install --editable .
+```
+
+The editable install means code changes take effect immediately without reinstalling.
+To reinstall after pulling updates: `uv tool install --editable .` again, or
+`uv tool uninstall color-banner` then reinstall.
 
 ## Usage
 
