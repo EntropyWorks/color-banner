@@ -31,3 +31,9 @@ originated here. Each bundled font carries its own permissive license header
 within the `.flf` file.
 
 Licensed under the FIGlet license (permissive, attribution required).
+
+## Claude Code
+
+This project was developed with the assistance of
+[Claude Code](https://claude.ai/code) by Anthropic — an AI-powered CLI
+for software engineering tasks.
