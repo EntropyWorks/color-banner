@@ -84,7 +84,7 @@ feat: commit → merge to main
    - Same steps as `ci.yml` test job (single version, not a matrix)
 
 2. `publish` — depends on `test` passing
-   - Environment: `PyPi` (must match exactly — case-sensitive)
+   - Environment: `pypi` (must match exactly — case-sensitive)
    - Permission: `id-token: write` (OIDC trusted publishing, no stored token)
    - Steps: `actions/checkout@v4` → `astral-sh/setup-uv@v5` → `uv build` → `pypa/gh-action-pypi-publish@release/v1`
 
@@ -92,7 +92,7 @@ feat: commit → merge to main
 - Owner: `EntropyWorks`
 - Repository: `color-banner`
 - Workflow: `publish.yml`
-- Environment: `PyPi`
+- Environment: `pypi`
 
 ---
 
@@ -113,7 +113,7 @@ File: `.github/dependabot.yml`
 | `.github/workflows/ci.yml` | Test matrix |
 | `.github/workflows/release-please.yml` | Automated Release PR + tag |
 | `.github/workflows/publish.yml` | PyPI publish on release |
-| `.github/release-please-config.json` | release-please package config |
+| `release-please-config.json` | release-please package config |
 | `.release-please-manifest.json` | Current version tracking |
 | `.github/dependabot.yml` | Automatic dependency updates |
 
