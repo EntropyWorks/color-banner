@@ -18,7 +18,7 @@ def run(args: list[str], **kwargs) -> subprocess.CompletedProcess:
 def test_version_flag():
     result = run(["--version"])
     assert result.returncode == 0
-    assert "0.1.0" in result.stdout
+    assert "color-banner" in result.stdout
 
 
 def test_list_palettes():
