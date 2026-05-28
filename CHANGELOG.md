@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/EntropyWorks/color-banner/compare/v0.2.0...v0.2.1) (2026-05-28)
+
+
+### Bug Fixes
+
+* publish via workflow_run to bypass GITHUB_TOKEN restriction; fix version test ([2912dc7](https://github.com/EntropyWorks/color-banner/commit/2912dc7714f9662c5ce4c5c180b19172c37dd2aa))
+
 ## [0.2.0](https://github.com/EntropyWorks/color-banner/compare/v0.1.0...v0.2.0) (2026-05-28)
 
 
