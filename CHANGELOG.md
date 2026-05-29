@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.3](https://github.com/EntropyWorks/color-banner/compare/v0.3.2...v0.3.3) (2026-05-29)
+
+
+### Bug Fixes
+
+* add Python version classifiers and fix CICD typo in project description ([6352467](https://github.com/EntropyWorks/color-banner/commit/63524678c215885efdc4275f46785fe19d03c6a9))
+
 ## [0.3.2](https://github.com/EntropyWorks/color-banner/compare/v0.3.1...v0.3.2) (2026-05-29)
 
 
