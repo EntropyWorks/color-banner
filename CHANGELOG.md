@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.1](https://github.com/EntropyWorks/color-banner/compare/v0.3.0...v0.3.1) (2026-05-29)
+
+
+### Bug Fixes
+
+* correct CICD to CI/CD in README description ([4bfd9c4](https://github.com/EntropyWorks/color-banner/commit/4bfd9c4dc70d13df73b05c0194a589e69377bf40))
+
+
+### Documentation
+
+* add PyPI badges and gallery showcase images to README ([ede65ad](https://github.com/EntropyWorks/color-banner/commit/ede65ad89584770ec005b9728f7b6aded8b0f50f))
+
 ## [0.3.0](https://github.com/EntropyWorks/color-banner/compare/v0.2.1...v0.3.0) (2026-05-29)
 
 
