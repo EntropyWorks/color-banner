@@ -4,6 +4,12 @@
   <img src="assets/banner.png" alt="color-banner">
 </p>
 
+<p align="center">
+  <a href="https://pypi.org/project/color-banner/"><img src="https://img.shields.io/pypi/v/color-banner" alt="PyPI version"></a>
+  <a href="https://pypi.org/project/color-banner/"><img src="https://img.shields.io/pypi/pyversions/color-banner" alt="Python versions"></a>
+  <a href="https://github.com/EntropyWorks/color-banner/blob/main/LICENSE"><img src="https://img.shields.io/pypi/l/color-banner" alt="License"></a>
+</p>
+
 > Built on the shoulders of [FIGlet](http://www.figlet.org/) (Glenn Chappell & Ian Chai, 1991),
 > [pyfiglet](https://github.com/pwaller/pyfiglet) (Christopher Jones, Stefano Rivera, Peter Waller), and
 > [Calligraphy](https://codeberg.org/GeopJr/Calligraphy) (GeopJr / Gregor "gregorni" Niehl).
@@ -31,7 +37,7 @@ Designed for CICD pipelines, shell startup screens, and BBS-style splash screens
 
 ## Install
 
-**From PyPI** (once published):
+**From PyPI:**
 
 ```bash
 uv tool install color-banner
@@ -153,6 +159,18 @@ show_banner
 ```
 
 ## Gallery
+
+### Showcase
+
+| neon | sunset | ocean |
+|------|--------|-------|
+| ![future neon](assets/examples/future_neon_lr.png) | ![dos_rebel sunset](assets/examples/dos_rebel_sunset_lr.png) | ![electronic ocean](assets/examples/electronic_ocean_lr.png) |
+
+| fire | ice | rainbow |
+|------|-----|---------|
+| ![bloody fire](assets/examples/bloody_fire_lr.png) | ![thick ice](assets/examples/thick_ice_lr.png) | ![pagga rainbow](assets/examples/pagga_rainbow_lr.png) |
+
+### All fonts
 
 Each section below shows all six built-in palettes rendered with that font.
 Click a font name to expand.
