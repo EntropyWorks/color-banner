@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.2](https://github.com/EntropyWorks/color-banner/compare/v0.3.1...v0.3.2) (2026-05-29)
+
+
+### Bug Fixes
+
+* use absolute GitHub raw URLs for images so they render on PyPI ([87d30ae](https://github.com/EntropyWorks/color-banner/commit/87d30ae986bd9c1cfe714791c025cba4c4eba69f))
+
 ## [0.3.1](https://github.com/EntropyWorks/color-banner/compare/v0.3.0...v0.3.1) (2026-05-29)
 
 

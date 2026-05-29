@@ -1,6 +1,6 @@
 [project]
 name = "color-banner"
-version = "0.3.1"
+version = "0.3.2"
 description = "Colorful figlet ASCII banners for terminals, CICD pipelines, and shell splash screens"
 readme = "README.md"
 license = { text = "Apache-2.0" }
