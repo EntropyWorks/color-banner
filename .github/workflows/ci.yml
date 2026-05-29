@@ -24,3 +24,11 @@ jobs:
 
       - name: Run tests
         run: uv run pytest tests/ -v
+
+      - name: Banner — success
+        if: success()
+        run: bash assets/bin/tests-passed.sh
+
+      - name: Banner — failure
+        if: failure()
+        run: bash assets/bin/tests-failed.sh
