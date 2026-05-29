@@ -4,8 +4,17 @@ import subprocess
 
 import pytest
 
-from color_banner.output import write_ansi_file, write_ansi_files_all, write_shell_export, write_stdout
+from color_banner.output import (
+    _ansi_to_html_spans,
+    write_ansi_file,
+    write_ansi_files_all,
+    write_html_file,
+    write_html_snippet,
+    write_shell_export,
+    write_stdout,
+)
 
+COLORED_LINE = "\x1b[38;2;255;0;128mH\x1b[0m \x1b[38;2;0;128;255mi\x1b[0m"
 SAMPLE_LINES = [
     "\x1b[38;2;255;0;0mH\x1b[0m",
     "\x1b[38;2;0;0;255mi\x1b[0m",
@@ -197,11 +206,6 @@ def test_write_ansi_files_all_content(tmp_path):
     assert "world" in content
     assert "color-banner" in content
     assert "# Font: banner (#005)" in content
-
-
-from color_banner.output import _ansi_to_html_spans, write_html_file, write_html_snippet
-
-COLORED_LINE = "\x1b[38;2;255;0;128mH\x1b[0m \x1b[38;2;0;128;255mi\x1b[0m"
 
 
 def test_ansi_to_html_spans_wraps_in_pre():
