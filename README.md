@@ -16,7 +16,7 @@
 > Licensed under Apache 2.0.
 
 Render text as colorful 24-bit figlet ASCII banners in the terminal.
-Designed for CICD pipelines, shell startup screens, and BBS-style splash screens.
+Designed for CI/CD pipelines, shell startup screens, and BBS-style splash screens.
 
 - [Requirements](#requirements)
 - [Install](#install)
