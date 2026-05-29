@@ -197,3 +197,83 @@ def test_write_ansi_files_all_content(tmp_path):
     assert "world" in content
     assert "color-banner" in content
     assert "# Font: banner (#005)" in content
+
+
+from color_banner.output import _ansi_to_html_spans, write_html_file, write_html_snippet
+
+COLORED_LINE = "\x1b[38;2;255;0;128mH\x1b[0m \x1b[38;2;0;128;255mi\x1b[0m"
+
+
+def test_ansi_to_html_spans_wraps_in_pre():
+    result = _ansi_to_html_spans([""])
+    assert result.startswith("<pre>")
+    assert result.endswith("</pre>")
+
+
+def test_ansi_to_html_spans_colored_char():
+    result = _ansi_to_html_spans(["\x1b[38;2;255;0;128mH\x1b[0m"])
+    assert '<span style="color:rgb(255,0,128)">H</span>' in result
+
+
+def test_ansi_to_html_spans_space_passthrough():
+    result = _ansi_to_html_spans([" "])
+    assert "<span" not in result
+    assert " " in result
+
+
+def test_ansi_to_html_spans_escapes_lt_gt_amp():
+    result = _ansi_to_html_spans(["<>&"])
+    assert "&lt;" in result
+    assert "&gt;" in result
+    assert "&amp;" in result
+
+
+def test_write_html_file_creates_file(tmp_path):
+    out = tmp_path / "banner.html"
+    write_html_file([COLORED_LINE], str(out), VERSION)
+    assert out.exists()
+
+
+def test_write_html_file_has_doctype(tmp_path):
+    out = tmp_path / "banner.html"
+    write_html_file([COLORED_LINE], str(out), VERSION)
+    assert "<!DOCTYPE html>" in out.read_text(encoding="utf-8")
+
+
+def test_write_html_file_contains_colored_span(tmp_path):
+    out = tmp_path / "banner.html"
+    write_html_file(["\x1b[38;2;255;0;128mH\x1b[0m"], str(out), VERSION)
+    assert '<span style="color:rgb(255,0,128)">H</span>' in out.read_text(encoding="utf-8")
+
+
+def test_write_html_file_has_dark_background(tmp_path):
+    out = tmp_path / "banner.html"
+    write_html_file([COLORED_LINE], str(out), VERSION)
+    assert "#1a1a1a" in out.read_text(encoding="utf-8")
+
+
+def test_write_html_file_creates_parent_dirs(tmp_path):
+    deep = tmp_path / "a" / "b" / "banner.html"
+    write_html_file([COLORED_LINE], str(deep), VERSION)
+    assert deep.exists()
+
+
+def test_write_html_file_contains_attribution(tmp_path):
+    out = tmp_path / "banner.html"
+    write_html_file([COLORED_LINE], str(out), VERSION)
+    content = out.read_text(encoding="utf-8")
+    assert "Calligraphy" in content
+    assert "GeopJr" in content
+
+
+def test_write_html_snippet_prints_pre(capsys):
+    write_html_snippet([COLORED_LINE])
+    out = capsys.readouterr().out
+    assert "<pre>" in out
+    assert "</pre>" in out
+
+
+def test_write_html_snippet_contains_span(capsys):
+    write_html_snippet(["\x1b[38;2;255;0;128mH\x1b[0m"])
+    out = capsys.readouterr().out
+    assert '<span style="color:rgb(255,0,128)">H</span>' in out
