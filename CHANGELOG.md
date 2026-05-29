@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/EntropyWorks/color-banner/compare/v0.2.1...v0.3.0) (2026-05-29)
+
+
+### Features
+
+* add CI banner scripts and make banners target ([#6](https://github.com/EntropyWorks/color-banner/issues/6)) ([424290a](https://github.com/EntropyWorks/color-banner/commit/424290a7f212839f3eda7911e4b0251f3d2acb0a))
+
 ## [0.2.1](https://github.com/EntropyWorks/color-banner/compare/v0.2.0...v0.2.1) (2026-05-28)
 
 
