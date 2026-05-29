@@ -49,3 +49,11 @@ jobs:
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+
+      - name: Banner — published
+        if: success()
+        run: bash assets/bin/published.sh
+
+      - name: Banner — failure
+        if: failure()
+        run: bash assets/bin/build-failed.sh
