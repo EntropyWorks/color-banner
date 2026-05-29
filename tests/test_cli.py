@@ -28,6 +28,14 @@ def test_list_palettes():
         assert name in result.stdout
 
 
+def test_list_palettes_includes_all_palette_names():
+    from color_banner.color import PALETTES
+    result = run(["--list-palettes"])
+    assert result.returncode == 0
+    for name in PALETTES:
+        assert name in result.stdout, f"palette '{name}' missing from --list-palettes output"
+
+
 def test_list_fonts():
     result = run(["--list-fonts"])
     assert result.returncode == 0

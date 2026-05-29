@@ -49,7 +49,7 @@ def _build_parser() -> argparse.ArgumentParser:
     mx = color_group.add_mutually_exclusive_group()
     mx.add_argument(
         "--palette", metavar="NAME",
-        help="built-in palette name (neon, sunset, ocean, fire, ice, rainbow)",
+        help="built-in palette name (see --list-palettes for all options)",
     )
     mx.add_argument(
         "--gradient", nargs="+", metavar="HEX",

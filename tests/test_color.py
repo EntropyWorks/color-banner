@@ -121,3 +121,24 @@ def test_resolve_stops_gradient_too_many_stops_raises():
 def test_resolve_stops_gradient_invalid_hex_raises():
     with pytest.raises(ValueError, match="expected #RRGGBB"):
         resolve_stops(None, ["#ff0000", "bad"])
+
+
+NEW_PALETTE_NAMES = [
+    "dracula", "nord", "monokai", "gruvbox", "catppuccin",
+    "tokyo", "vaporwave", "aurora", "zebra",
+    "synthwave", "inferno", "plasma", "galaxy",
+    "tropical", "pride", "deepsea", "lava",
+]
+
+
+@pytest.mark.parametrize("name", NEW_PALETTE_NAMES)
+def test_new_palette_exists(name):
+    assert name in PALETTES, f"palette '{name}' missing from PALETTES"
+
+
+@pytest.mark.parametrize("name", NEW_PALETTE_NAMES)
+def test_new_palette_has_valid_hex_stops(name):
+    stops = PALETTES[name]
+    assert len(stops) >= 2
+    for stop in stops:
+        parse_hex(stop)  # raises ValueError on bad input
