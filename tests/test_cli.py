@@ -447,3 +447,65 @@ def test_save_all_readable_preserves_original_numbers(tmp_path):
         parts = f.stem.split("-", 1)
         file_num, font_name = parts[0], parts[1]
         assert num_map[font_name] == file_num
+
+
+def test_save_html_creates_file(tmp_path):
+    out = tmp_path / "banner.html"
+    result = run(["Hello", "--palette", "neon", "--save-html", str(out)])
+    assert result.returncode == 0
+    assert out.exists()
+    assert '<span style="color:rgb(' in out.read_text(encoding="utf-8")
+
+
+def test_save_html_is_valid_html(tmp_path):
+    out = tmp_path / "banner.html"
+    run(["Hello", "--palette", "neon", "--save-html", str(out)])
+    content = out.read_text(encoding="utf-8")
+    assert "<!DOCTYPE html>" in content
+    assert "<pre>" in content
+
+
+def test_save_html_suppresses_stdout(tmp_path):
+    out = tmp_path / "banner.html"
+    result = run(["Hello", "--palette", "neon", "--save-html", str(out)])
+    assert result.returncode == 0
+    assert result.stdout == ""
+
+
+def test_html_snippet_prints_to_stdout():
+    result = run(["Hello", "--palette", "neon", "--html-snippet"])
+    assert result.returncode == 0
+    assert "<pre>" in result.stdout
+    assert '<span style="color:rgb(' in result.stdout
+
+
+def test_html_snippet_suppresses_ansi_stdout():
+    result = run(["Hello", "--palette", "neon", "--html-snippet"])
+    assert "\x1b[" not in result.stdout
+
+
+def test_save_html_and_save_together(tmp_path):
+    html_out = tmp_path / "banner.html"
+    ans_out = tmp_path / "banner.ans"
+    result = run([
+        "Hi", "--palette", "neon",
+        "--save-html", str(html_out),
+        "--save", str(ans_out),
+    ])
+    assert result.returncode == 0
+    assert html_out.exists()
+    assert ans_out.exists()
+
+
+def test_html_snippet_always_has_color():
+    """--no-color must not strip color from --html-snippet output."""
+    result = run(["Hello", "--palette", "neon", "--html-snippet", "--no-color"])
+    assert result.returncode == 0
+    assert '<span style="color:rgb(' in result.stdout
+
+
+def test_save_html_always_has_color(tmp_path):
+    """--no-color must not strip color from --save-html output."""
+    out = tmp_path / "banner.html"
+    run(["Hello", "--palette", "neon", "--save-html", str(out), "--no-color"])
+    assert '<span style="color:rgb(' in out.read_text(encoding="utf-8")

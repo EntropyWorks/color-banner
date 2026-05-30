@@ -6,7 +6,7 @@ import sys
 
 from color_banner import __version__
 from color_banner.color import PALETTES, resolve_stops
-from color_banner.output import write_ansi_file, write_ansi_files_all, write_shell_export, write_stdout
+from color_banner.output import write_ansi_file, write_ansi_files_all, write_html_file, write_html_snippet, write_shell_export, write_stdout
 from color_banner.painter import paint
 from color_banner.renderer import (
     numbered_fonts,
@@ -76,6 +76,14 @@ def _build_parser() -> argparse.ArgumentParser:
     out_group.add_argument(
         "--function-name", default="show_banner", metavar="NAME",
         help="function name for --export (default: show_banner)",
+    )
+    out_group.add_argument(
+        "--save-html", metavar="FILE",
+        help="write self-contained HTML page (open in browser)",
+    )
+    out_group.add_argument(
+        "--html-snippet", action="store_true",
+        help="print <pre> HTML snippet to stdout",
     )
     out_group.add_argument(
         "--no-color", action="store_true",
@@ -217,6 +225,8 @@ def main() -> None:
     # Stdout auto-detects TTY and strips ANSI when piped
     file_no_color = args.no_color
     lines_for_file = paint(rows, stops, args.direction, no_color=file_no_color)
+    # HTML outputs always include color regardless of --no-color
+    lines_for_html = paint(rows, stops, args.direction, no_color=False)
 
     try:
         if args.save:
@@ -225,7 +235,11 @@ def main() -> None:
             write_shell_export(
                 lines_for_file, args.export, __version__, args.function_name
             )
-        if not args.save and not args.export:
+        if args.save_html:
+            write_html_file(lines_for_html, args.save_html, __version__)
+        if args.html_snippet:
+            write_html_snippet(lines_for_html)
+        if not args.save and not args.export and not args.save_html and not args.html_snippet:
             stdout_no_color = args.no_color or not sys.stdout.isatty()
             lines_for_stdout = paint(
                 rows, stops, args.direction, no_color=stdout_no_color
