@@ -67,7 +67,7 @@ font options:
   --width N               terminal width for line-wrapping (default: 80; 0 = never wrap)
 
 color options (mutually exclusive):
-  --palette NAME          built-in palette: neon sunset ocean fire ice rainbow
+  --palette NAME          built-in palette (see --list-palettes for all 23 options)
   --gradient HEX [HEX …]  2–8 hex color stops e.g. --gradient '#ff0080' '#00d4ff'
   --direction DIR         gradient direction: lr|tb|bt|diag (default: lr)
 
@@ -76,6 +76,8 @@ output options:
   --save-all DIR          save a banner per font into DIR as NNN-fontname.ans
   --export FILE           write self-contained shell function (.sh)
   --function-name NAME    function name for --export (default: show_banner)
+  --save-html FILE        write self-contained HTML page (open in browser)
+  --html-snippet          print <pre> HTML snippet to stdout
   --no-color              plain text, no ANSI codes
 
 info:
@@ -106,9 +108,52 @@ color-banner "Hello" --gradient "#ff0080" "#7b2fff" "#00d4ff" --direction diag
 # plain figlet text, no color (pipe-safe)
 color-banner "Hello" --font ogre --no-color
 
-# list all built-in palettes
+# list all built-in palettes (23 total: editor themes, rich gradients, and classics)
 color-banner --list-palettes
+
+# save a browser-viewable HTML page
+color-banner "Hello" --palette dracula --save-html banner.html
+
+# print a <pre> HTML snippet to stdout (pipe into a webpage, etc.)
+color-banner "Hello" --palette synthwave --html-snippet
 ```
+
+## Palettes
+
+23 built-in palettes across three categories:
+
+**Editor / terminal themes** (4 stops)
+
+| Name | Colors |
+|------|--------|
+| `dracula` | purple → pink → cyan → green |
+| `nord` | steel blue → periwinkle → sky → teal |
+| `monokai` | pink → orange → yellow → lime |
+| `gruvbox` | crimson → burnt orange → harvest yellow → olive |
+| `catppuccin` | mauve → dusty rose → peach → mint |
+| `tokyo` | cornflower → violet → lime → teal |
+| `vaporwave` | hot pink → purple → electric cyan → mint |
+| `aurora` | sage → sky blue → soft purple → gold |
+| `zebra` | near-black → silver → white → silver |
+
+**Rich multi-stop gradients** (6–8 stops)
+
+| Name | Feel |
+|------|------|
+| `synthwave` | hot pink → deep purple → electric blue |
+| `inferno` | black → purple → crimson → orange → incandescent yellow |
+| `plasma` | deep indigo → magenta → salmon → neon yellow |
+| `galaxy` | deep space → violet → pink → gold → starlight |
+| `tropical` | coral → tangerine → lime → turquoise → ocean blue |
+| `pride` | full rainbow in flag order |
+| `deepsea` | midnight navy → sapphire → teal → seafoam |
+| `lava` | near-black red → deep crimson → amber → gold |
+
+**Classics** (original 6)
+
+`neon` · `sunset` · `ocean` · `fire` · `ice` · `rainbow`
+
+Run `color-banner --list-palettes` to see all hex stops.
 
 ## Fonts
 
