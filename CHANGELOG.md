@@ -12,6 +12,7 @@
 
 ### Documentation
 
+* update README with 23 palettes and HTML export flags ([b0d4f1c](https://github.com/EntropyWorks/color-banner/commit/b0d4f1c))
 * add design spec for 9 new color palettes ([9adb8ad](https://github.com/EntropyWorks/color-banner/commit/9adb8ad6c77987027372251d02257e8254488733))
 * add design spec for HTML export feature ([ac03cc4](https://github.com/EntropyWorks/color-banner/commit/ac03cc4082c60da8ebf9301e4a34cadd386b1ee0))
 * add implementation plan for HTML export feature ([a5d663d](https://github.com/EntropyWorks/color-banner/commit/a5d663d9fb2b2779fd0b390c7e37495d382bd727))
