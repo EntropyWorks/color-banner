@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.4.0](https://github.com/EntropyWorks/color-banner/compare/v0.3.3...v0.4.0) (2026-05-30)
+
+
+### Features
+
+* add --save-html and --html-snippet output flags ([ef1e06c](https://github.com/EntropyWorks/color-banner/commit/ef1e06c3ce139ca86f4abc813c9cf141ad9f250f))
+* add 17 new palettes (editor themes + rich multi-stop gradients) ([e320349](https://github.com/EntropyWorks/color-banner/commit/e320349c1c62c3094e19fca0e6e0b21979607e80))
+* add HTML conversion functions to output.py ([77edcb3](https://github.com/EntropyWorks/color-banner/commit/77edcb357cf3aaa4b884812ee1858f9a1cd4df99))
+
+
+### Documentation
+
+* add design spec for 9 new color palettes ([9adb8ad](https://github.com/EntropyWorks/color-banner/commit/9adb8ad6c77987027372251d02257e8254488733))
+* add design spec for HTML export feature ([ac03cc4](https://github.com/EntropyWorks/color-banner/commit/ac03cc4082c60da8ebf9301e4a34cadd386b1ee0))
+* add implementation plan for HTML export feature ([a5d663d](https://github.com/EntropyWorks/color-banner/commit/a5d663d9fb2b2779fd0b390c7e37495d382bd727))
+* add implementation plan for new palettes ([84d5b6c](https://github.com/EntropyWorks/color-banner/commit/84d5b6c18b5105f649fd512b0634c38cb945fee0))
+* update palette spec to include 8 complex multi-stop palettes ([700f9c1](https://github.com/EntropyWorks/color-banner/commit/700f9c137c242bd593e6ce100b18a832d13cffc5))
+
 ## [0.3.3](https://github.com/EntropyWorks/color-banner/compare/v0.3.2...v0.3.3) (2026-05-29)
 
 
