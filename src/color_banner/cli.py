@@ -5,7 +5,7 @@ import argparse
 import sys
 
 from color_banner import __version__
-from color_banner.color import PALETTES, resolve_stops
+from color_banner.color import PALETTES, gradient_color, resolve_stops
 from color_banner.output import (
     write_ansi_file,
     write_ansi_files_all,
@@ -106,6 +106,10 @@ def _build_parser() -> argparse.ArgumentParser:
         help="print built-in palette names and their hex stops",
     )
     parser.add_argument(
+        "--preview-palettes", action="store_true",
+        help="print palette names rendered in their own colors",
+    )
+    parser.add_argument(
         "-v", "--version", action="version", version=f"%(prog)s {__version__}",
     )
 
@@ -146,6 +150,25 @@ def main() -> None:
     if args.list_palettes:
         for name, stops in PALETTES.items():
             print(f"{name}: {' -> '.join(stops)}")
+        return
+
+    if args.preview_palettes:
+        use_color = sys.stdout.isatty() and not args.no_color
+        for name, stops in PALETTES.items():
+            if use_color:
+                chars = []
+                n = len(name)
+                for i, ch in enumerate(name):
+                    t = i / max(n - 1, 1)
+                    r, g, b = gradient_color(t, stops)
+                    chars.append(f"\x1b[38;2;{r};{g};{b}m{ch}\x1b[0m")
+                colored_name = "".join(chars)
+            else:
+                colored_name = name
+            stop_summary = " → ".join(stops[:3])
+            if len(stops) > 3:
+                stop_summary += f" … (+{len(stops) - 3})"
+            print(f"{colored_name}  {stop_summary}")
         return
 
     if args.all is not None:

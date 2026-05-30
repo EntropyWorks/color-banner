@@ -538,3 +538,23 @@ def test_bg_color_no_color_suppresses_bg():
     result = run(["Hello", "--palette", "neon", "--bg-color", "#ff0000", "--no-color"])
     assert result.returncode == 0
     assert "\x1b[" not in result.stdout
+
+
+# --- Feature 3: --preview-palettes ---
+
+def test_preview_palettes_exits_zero():
+    result = run(["--preview-palettes", "--no-color"])
+    assert result.returncode == 0
+
+
+def test_preview_palettes_lists_all_palettes():
+    result = run(["--preview-palettes", "--no-color"])
+    for name in ("neon", "dracula", "synthwave", "zebra"):
+        assert name in result.stdout
+
+
+def test_preview_palettes_shows_all_23():
+    from color_banner.color import PALETTES
+    result = run(["--preview-palettes", "--no-color"])
+    lines = [l for l in result.stdout.strip().splitlines() if l]
+    assert len(lines) == len(PALETTES)
