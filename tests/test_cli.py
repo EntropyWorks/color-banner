@@ -517,3 +517,24 @@ def test_palette_random_renders_without_error():
     result = run(["Hello", "--palette", "random", "--no-color"])
     assert result.returncode == 0
     assert len(result.stdout.strip()) > 0
+
+
+# --- Feature 2: --bg-color ---
+
+def test_bg_color_flag(tmp_path):
+    out = tmp_path / "banner.ans"
+    result = run(["Hello", "--palette", "neon", "--bg-color", "#1a1a1a", "--save", str(out)])
+    assert result.returncode == 0
+    content = out.read_text(encoding="utf-8")
+    assert "\x1b[48;2;26;26;26m" in content
+
+
+def test_bg_color_invalid_hex():
+    result = run(["Hello", "--palette", "neon", "--bg-color", "notahex"])
+    assert result.returncode == 1
+
+
+def test_bg_color_no_color_suppresses_bg():
+    result = run(["Hello", "--palette", "neon", "--bg-color", "#ff0000", "--no-color"])
+    assert result.returncode == 0
+    assert "\x1b[" not in result.stdout
