@@ -509,3 +509,11 @@ def test_save_html_always_has_color(tmp_path):
     out = tmp_path / "banner.html"
     run(["Hello", "--palette", "neon", "--save-html", str(out), "--no-color"])
     assert '<span style="color:rgb(' in out.read_text(encoding="utf-8")
+
+
+# --- Feature 1: --palette random ---
+
+def test_palette_random_renders_without_error():
+    result = run(["Hello", "--palette", "random", "--no-color"])
+    assert result.returncode == 0
+    assert len(result.stdout.strip()) > 0

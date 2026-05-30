@@ -142,3 +142,16 @@ def test_new_palette_has_valid_hex_stops(name):
     assert len(stops) >= 2
     for stop in stops:
         parse_hex(stop)  # raises ValueError on bad input
+
+
+def test_resolve_stops_random_returns_valid_palette():
+    stops = resolve_stops("random", None)
+    assert len(stops) >= 2
+    for stop in stops:
+        parse_hex(stop)  # raises if invalid
+
+
+def test_resolve_stops_random_returns_known_palette_stops():
+    all_stops = [stops for stops in PALETTES.values()]
+    result = resolve_stops("random", None)
+    assert result in all_stops
