@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.1](https://github.com/EntropyWorks/color-banner/compare/v0.4.0...v0.4.1) (2026-05-30)
+
+
+### Documentation
+
+* add README update entry to 0.4.0 changelog ([1f8441a](https://github.com/EntropyWorks/color-banner/commit/1f8441af19fca7f724b341734acaae934960b625))
+* update README with 23 palettes and HTML export flags ([b0d4f1c](https://github.com/EntropyWorks/color-banner/commit/b0d4f1c0b828cb26d78815669fabd7a10d384c1c))
+
 ## [0.4.0](https://github.com/EntropyWorks/color-banner/compare/v0.3.3...v0.4.0) (2026-05-30)
 
 
