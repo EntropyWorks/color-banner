@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/EntropyWorks/color-banner/compare/v0.4.1...v0.5.0) (2026-06-01)
+
+
+### Features
+
+* terminal enhancements — random palette, bg-color, preview-palettes ([#13](https://github.com/EntropyWorks/color-banner/issues/13)) ([043300a](https://github.com/EntropyWorks/color-banner/commit/043300a1fa095456bbd53887be8bf493ce6855d4))
+
 ## [0.4.1](https://github.com/EntropyWorks/color-banner/compare/v0.4.0...v0.4.1) (2026-05-30)
 
 
