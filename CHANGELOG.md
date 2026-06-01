@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/EntropyWorks/color-banner/compare/v0.5.0...v0.5.1) (2026-06-01)
+
+
+### Bug Fixes
+
+* pin hatchling&lt;1.25 to avoid metadata 2.5 incompatibility with PyPI publish action ([eecadfd](https://github.com/EntropyWorks/color-banner/commit/eecadfd7c1d53699f99743b88eae9dae15a47eb4))
+
 ## [0.5.0](https://github.com/EntropyWorks/color-banner/compare/v0.4.1...v0.5.0) (2026-06-01)
 
 
