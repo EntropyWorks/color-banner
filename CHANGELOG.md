@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.2](https://github.com/EntropyWorks/color-banner/compare/v0.5.1...v0.5.2) (2026-06-01)
+
+
+### Documentation
+
+* comprehensive README update — fix missing flags, add HTML export and TOC sections ([#16](https://github.com/EntropyWorks/color-banner/issues/16)) ([ad8c92b](https://github.com/EntropyWorks/color-banner/commit/ad8c92b73eda600e2a7f9b32d1557c0455074b35))
+
 ## [0.5.1](https://github.com/EntropyWorks/color-banner/compare/v0.5.0...v0.5.1) (2026-06-01)
 
 
