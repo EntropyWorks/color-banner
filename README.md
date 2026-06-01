@@ -22,7 +22,9 @@ Designed for CI/CD pipelines, shell startup screens, and BBS-style splash screen
 - [Install](#install)
 - [Usage](#usage)
 - [Examples](#examples)
+- [Palettes](#palettes)
 - [Fonts](#fonts)
+- [HTML Export](#html-export)
 - [Embedding in a CI pipeline](#embedding-in-a-ci-pipeline)
 - [Gallery](#gallery)
 - [License](#license)
@@ -63,14 +65,16 @@ color-banner TEXT [options]
 font options:
   -f, --font FONT         figlet font name or 3-digit number (default: slant)
   --list-fonts [FILTER]   list fonts; use 'readable' to filter to clean-rendering fonts
-  --all                   render banner for every font (numbered header before each)
+  --all [FILTER]          render banner for every font; use 'readable' to skip unreadable
+  --readable              filter --save-all to readable fonts only
   --width N               terminal width for line-wrapping (default: 80; 0 = never wrap)
 
-color options (mutually exclusive):
+color options:
   --palette NAME          built-in palette name or 'random'; see --list-palettes for all 23
   --gradient HEX [HEX …]  2–8 hex color stops e.g. --gradient '#ff0080' '#00d4ff'
   --direction DIR         gradient direction: lr|tb|bt|diag (default: lr)
-  --bg-color HEX          24-bit background color e.g. --bg-color '#1a1a1a'
+  --bg-color HEX          24-bit terminal background color e.g. --bg-color '#1a1a1a'
+  (--palette and --gradient are mutually exclusive)
 
 output options:
   --save FILE             write ANSI escape file (cat-able); parent dirs auto-created
@@ -90,11 +94,33 @@ info:
 ## Examples
 
 ```bash
-# print to terminal
+# basic render
+color-banner "Fox and Dog" --palette neon
+
+# gradient direction (lr, tb, bt, diag)
 color-banner "Fox and Dog" --palette neon --direction tb
 
-# widen the canvas to avoid line-wrapping with large fonts
+# widen canvas to avoid line-wrapping with large fonts
 color-banner "Fox and Dog" --palette sunset --width 0
+
+# custom font
+color-banner "Hello" --font delta_corps_priest_1 --palette dracula
+
+# pick a random built-in palette on each run (great for .bashrc splash screens)
+color-banner "Hello" --palette random
+
+# add a 24-bit background color behind every character cell
+color-banner "Hello" --palette synthwave --bg-color '#1a1a1a'
+
+# custom hex gradient with diagonal sweep
+color-banner "Hello" --gradient "#ff0080" "#7b2fff" "#00d4ff" --direction diag
+
+# plain text — no ANSI codes (safe to pipe)
+color-banner "Hello" --font ogre --no-color
+
+# browse palettes
+color-banner --list-palettes          # hex stop values
+color-banner --preview-palettes       # names rendered in their own colors
 
 # save a cat-able ANSI file (parent directories created automatically)
 color-banner "Deploy v2" --palette fire --direction diag --save .ci/banners/splash.ans
@@ -104,28 +130,10 @@ cat .ci/banners/splash.ans
 color-banner "Deploy v2" --palette fire --export splash.sh
 bash splash.sh
 
-# custom hex gradient, diagonal sweep
-color-banner "Hello" --gradient "#ff0080" "#7b2fff" "#00d4ff" --direction diag
-
-# plain figlet text, no color (pipe-safe)
-color-banner "Hello" --font ogre --no-color
-
-# list all built-in palettes (23 total: editor themes, rich gradients, and classics)
-color-banner --list-palettes
-
-# preview palettes rendered in their own colors
-color-banner --preview-palettes
-
-# pick a random palette on each run
-color-banner "Hello" --palette random
-
-# add a dark background behind the banner
-color-banner "Hello" --palette synthwave --bg-color '#1a1a1a'
-
-# save a browser-viewable HTML page
+# save a browser-viewable HTML page (dark background, self-contained)
 color-banner "Hello" --palette dracula --save-html banner.html
 
-# print a <pre> HTML snippet to stdout (pipe into a webpage, etc.)
+# print a <pre> HTML snippet to stdout
 color-banner "Hello" --palette synthwave --html-snippet
 ```
 
@@ -164,7 +172,7 @@ color-banner "Hello" --palette synthwave --html-snippet
 
 `neon` · `sunset` · `ocean` · `fire` · `ice` · `rainbow`
 
-Run `color-banner --list-palettes` to see all hex stops.
+Run `color-banner --list-palettes` to see all hex stops, or `color-banner --preview-palettes` to see each name rendered in its own colors. Use `--palette random` to pick one at random on each invocation.
 
 ## Fonts
 
@@ -192,12 +200,38 @@ color-banner "Hello" --font 432
 # print all banners to stdout
 color-banner "Hello" --all --palette neon
 
+# readable fonts only (skips unusually tall/wide fonts)
+color-banner "Hello" --all readable --palette dracula
+
 # save every font as a numbered .ans file for offline browsing
 color-banner "Hello" --palette neon --save-all ./font-preview
+color-banner "Hello" --palette neon --save-all ./font-preview --readable
 ls font-preview/
 # 001-1943____.ans  002-1row.ans  003-3-d.ans …
 cat font-preview/432-slant.ans
 ```
+
+## HTML Export
+
+Generate a browser-viewable HTML file or an embeddable snippet. Colors are always
+rendered regardless of `--no-color` — HTML output is inherently color-capable.
+
+```bash
+# full self-contained page (dark background, no external dependencies)
+color-banner "Hello" --palette synthwave --save-html banner.html
+
+# combine with --bg-color for a custom page background feel
+color-banner "Hello" --palette tokyo --bg-color '#0d0d0d' --save-html banner.html
+
+# inline <pre> snippet — pipe into a template or webpage
+color-banner "Hello" --palette dracula --html-snippet
+
+# combine with --save to get both ANSI and HTML in one shot
+color-banner "Hello" --palette neon --save banner.ans --save-html banner.html
+```
+
+The HTML file uses inline `style="color:rgb(...)"` spans — no classes, no external
+CSS, safe to embed anywhere.
 
 ## Embedding in a CI pipeline
 
