@@ -67,9 +67,10 @@ font options:
   --width N               terminal width for line-wrapping (default: 80; 0 = never wrap)
 
 color options (mutually exclusive):
-  --palette NAME          built-in palette (see --list-palettes for all 23 options)
+  --palette NAME          built-in palette name or 'random'; see --list-palettes for all 23
   --gradient HEX [HEX …]  2–8 hex color stops e.g. --gradient '#ff0080' '#00d4ff'
   --direction DIR         gradient direction: lr|tb|bt|diag (default: lr)
+  --bg-color HEX          24-bit background color e.g. --bg-color '#1a1a1a'
 
 output options:
   --save FILE             write ANSI escape file (cat-able); parent dirs auto-created
@@ -82,6 +83,7 @@ output options:
 
 info:
   --list-palettes         print palette names and hex stops
+  --preview-palettes      print palette names rendered in their own colors
   -v, --version           show version and exit
 ```
 
@@ -110,6 +112,15 @@ color-banner "Hello" --font ogre --no-color
 
 # list all built-in palettes (23 total: editor themes, rich gradients, and classics)
 color-banner --list-palettes
+
+# preview palettes rendered in their own colors
+color-banner --preview-palettes
+
+# pick a random palette on each run
+color-banner "Hello" --palette random
+
+# add a dark background behind the banner
+color-banner "Hello" --palette synthwave --bg-color '#1a1a1a'
 
 # save a browser-viewable HTML page
 color-banner "Hello" --palette dracula --save-html banner.html

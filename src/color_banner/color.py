@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
 from __future__ import annotations
 
+import random
+
 PALETTES: dict[str, list[str]] = {
     # --- originals ---
     "neon":       ["#ff00ff", "#7700ff", "#00bbff", "#00ffdd"],
@@ -89,6 +91,8 @@ def resolve_stops(palette: str | None, gradient: list[str] | None) -> list[str]:
             parse_hex(stop)  # validate up front; raises ValueError on bad input
         return gradient
     if palette is not None:
+        if palette == "random":
+            return PALETTES[random.choice(list(PALETTES.keys()))]
         if palette not in PALETTES:
             available = ", ".join(PALETTES.keys())
             raise ValueError(f"unknown palette '{palette}'. Available: {available}")

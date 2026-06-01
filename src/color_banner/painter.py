@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 from __future__ import annotations
 
-from color_banner.color import gradient_color
+from color_banner.color import gradient_color, parse_hex
 
 DIRECTIONS = ("lr", "tb", "bt", "diag")
 
@@ -11,13 +11,15 @@ def paint(
     stops: list[str],
     direction: str,
     no_color: bool = False,
+    bg_color: str | None = None,
 ) -> list[str]:
     """Apply a gradient to ASCII art rows and return ANSI-escaped lines.
 
-    - Spaces are left uncolored (no escape codes emitted).
+    - Spaces are left uncolored (no escape codes emitted), unless bg_color is set.
     - Each non-space character is wrapped in a 24-bit foreground escape:
       \\x1b[38;2;{r};{g};{b}m{char}\\x1b[0m
-    - When no_color is True, rows are returned unchanged.
+    - When bg_color is set, a 24-bit background escape is prepended to every cell.
+    - When no_color is True, rows are returned unchanged (bg_color is also ignored).
 
     direction values:
       lr   — gradient sweeps left to right across each row
@@ -34,12 +36,20 @@ def paint(
     denom_lr   = max(max_cols - 1, 1)
     denom_diag = max(num_rows + max_cols - 2, 1)
 
+    bg: tuple[int, int, int] | None = None
+    if bg_color is not None:
+        bg = parse_hex(bg_color)
+    bg_prefix = f"\x1b[48;2;{bg[0]};{bg[1]};{bg[2]}m" if bg else ""
+
     result: list[str] = []
     for row_idx, row in enumerate(rows):
         parts: list[str] = []
         for col_idx, ch in enumerate(row):
             if ch == " ":
-                parts.append(ch)
+                if bg:
+                    parts.append(f"{bg_prefix} \x1b[0m")
+                else:
+                    parts.append(ch)
                 continue
 
             if direction == "lr":
@@ -52,7 +62,7 @@ def paint(
                 t = (row_idx + col_idx) / denom_diag
 
             r, g, b = gradient_color(t, stops)
-            parts.append(f"\x1b[38;2;{r};{g};{b}m{ch}\x1b[0m")
+            parts.append(f"{bg_prefix}\x1b[38;2;{r};{g};{b}m{ch}\x1b[0m")
 
         result.append("".join(parts))
     return result

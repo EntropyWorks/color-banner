@@ -5,7 +5,7 @@ import argparse
 import sys
 
 from color_banner import __version__
-from color_banner.color import PALETTES, resolve_stops
+from color_banner.color import PALETTES, gradient_color, resolve_stops
 from color_banner.output import (
     write_ansi_file,
     write_ansi_files_all,
@@ -66,6 +66,10 @@ def _build_parser() -> argparse.ArgumentParser:
         "--direction", default="lr", choices=["lr", "tb", "bt", "diag"],
         help="gradient direction: lr|tb|bt|diag (default: lr)",
     )
+    color_group.add_argument(
+        "--bg-color", metavar="HEX",
+        help="24-bit background color e.g. --bg-color '#1a1a1a'",
+    )
 
     out_group = parser.add_argument_group("output options")
     out_group.add_argument(
@@ -102,6 +106,10 @@ def _build_parser() -> argparse.ArgumentParser:
         help="print built-in palette names and their hex stops",
     )
     parser.add_argument(
+        "--preview-palettes", action="store_true",
+        help="print palette names rendered in their own colors",
+    )
+    parser.add_argument(
         "-v", "--version", action="version", version=f"%(prog)s {__version__}",
     )
 
@@ -116,6 +124,14 @@ def main() -> None:
     if args.width < 0:
         print("error: --width must be 0 (no wrap) or a positive integer", file=sys.stderr)
         sys.exit(1)
+
+    if args.bg_color:
+        try:
+            from color_banner.color import parse_hex
+            parse_hex(args.bg_color)
+        except ValueError as exc:
+            print(f"error: --bg-color: {exc}", file=sys.stderr)
+            sys.exit(1)
 
     if args.list_fonts is not None:
         _VALID_FILTERS = ("all", "readable")
@@ -134,6 +150,25 @@ def main() -> None:
     if args.list_palettes:
         for name, stops in PALETTES.items():
             print(f"{name}: {' -> '.join(stops)}")
+        return
+
+    if args.preview_palettes:
+        use_color = sys.stdout.isatty() and not args.no_color
+        for name, stops in PALETTES.items():
+            if use_color:
+                chars = []
+                n = len(name)
+                for i, ch in enumerate(name):
+                    t = i / max(n - 1, 1)
+                    r, g, b = gradient_color(t, stops)
+                    chars.append(f"\x1b[38;2;{r};{g};{b}m{ch}\x1b[0m")
+                colored_name = "".join(chars)
+            else:
+                colored_name = name
+            stop_summary = " → ".join(stops[:3])
+            if len(stops) > 3:
+                stop_summary += f" … (+{len(stops) - 3})"
+            print(f"{colored_name}  {stop_summary}")
         return
 
     if args.all is not None:
@@ -161,7 +196,7 @@ def main() -> None:
                 rows = render(args.text, font=font_name, width=args.width)
             except ValueError:
                 continue
-            lines = paint(rows, stops, args.direction, no_color=stdout_no_color)
+            lines = paint(rows, stops, args.direction, no_color=stdout_no_color, bg_color=args.bg_color)
             write_stdout(lines)
             print()
         return
@@ -182,7 +217,7 @@ def main() -> None:
                 rows = render(args.text, font=font_name, width=args.width)
             except ValueError:
                 continue
-            lines = paint(rows, stops, args.direction, no_color=args.no_color)
+            lines = paint(rows, stops, args.direction, no_color=args.no_color, bg_color=args.bg_color)
             font_banners.append((num, font_name, lines))
         try:
             write_ansi_files_all(font_banners, args.save_all, __version__)
@@ -231,7 +266,7 @@ def main() -> None:
     # File output always gets ANSI (unless --no-color explicitly set)
     # Stdout auto-detects TTY and strips ANSI when piped
     file_no_color = args.no_color
-    lines_for_file = paint(rows, stops, args.direction, no_color=file_no_color)
+    lines_for_file = paint(rows, stops, args.direction, no_color=file_no_color, bg_color=args.bg_color)
 
     try:
         if args.save:
@@ -241,7 +276,7 @@ def main() -> None:
                 lines_for_file, args.export, __version__, args.function_name
             )
         if args.save_html or args.html_snippet:
-            lines_for_html = paint(rows, stops, args.direction, no_color=False)
+            lines_for_html = paint(rows, stops, args.direction, no_color=False, bg_color=args.bg_color)
             if args.save_html:
                 write_html_file(lines_for_html, args.save_html, __version__)
             if args.html_snippet:
@@ -249,7 +284,7 @@ def main() -> None:
         if not args.save and not args.export and not args.save_html and not args.html_snippet:
             stdout_no_color = args.no_color or not sys.stdout.isatty()
             lines_for_stdout = paint(
-                rows, stops, args.direction, no_color=stdout_no_color
+                rows, stops, args.direction, no_color=stdout_no_color, bg_color=args.bg_color
             )
             write_stdout(lines_for_stdout)
     except OSError as exc:

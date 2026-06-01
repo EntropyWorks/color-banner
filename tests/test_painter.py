@@ -63,3 +63,34 @@ def test_diag_produces_distinct_colors_across_rows():
 def test_returns_same_row_count():
     rows = ["abc", "def", "ghi"]
     assert len(paint(rows, ["#ff0000", "#0000ff"], "lr")) == 3
+
+
+# --- Feature 2: --bg-color ---
+
+def test_paint_bg_color_applied_to_chars():
+    rows = ["H"]
+    stops = ["#ff0000", "#0000ff"]
+    lines = paint(rows, stops, "lr", bg_color="#1a1a1a")
+    assert "\x1b[48;2;26;26;26m" in lines[0]
+
+
+def test_paint_bg_color_applied_to_spaces():
+    rows = [" "]
+    stops = ["#ff0000", "#0000ff"]
+    lines = paint(rows, stops, "lr", bg_color="#ffffff")
+    assert "\x1b[48;2;255;255;255m" in lines[0]
+    assert " " in lines[0]
+
+
+def test_paint_no_color_ignores_bg_color():
+    rows = ["Hi"]
+    stops = ["#ff0000", "#0000ff"]
+    lines = paint(rows, stops, "lr", no_color=True, bg_color="#ff0000")
+    assert "\x1b[" not in lines[0]
+
+
+def test_paint_bg_color_none_unchanged():
+    rows = ["H"]
+    stops = ["#ff0000", "#0000ff"]
+    without_bg = paint(rows, stops, "lr", bg_color=None)
+    assert "\x1b[48;2;" not in without_bg[0]

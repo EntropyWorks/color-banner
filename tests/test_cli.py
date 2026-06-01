@@ -509,3 +509,52 @@ def test_save_html_always_has_color(tmp_path):
     out = tmp_path / "banner.html"
     run(["Hello", "--palette", "neon", "--save-html", str(out), "--no-color"])
     assert '<span style="color:rgb(' in out.read_text(encoding="utf-8")
+
+
+# --- Feature 1: --palette random ---
+
+def test_palette_random_renders_without_error():
+    result = run(["Hello", "--palette", "random", "--no-color"])
+    assert result.returncode == 0
+    assert len(result.stdout.strip()) > 0
+
+
+# --- Feature 2: --bg-color ---
+
+def test_bg_color_flag(tmp_path):
+    out = tmp_path / "banner.ans"
+    result = run(["Hello", "--palette", "neon", "--bg-color", "#1a1a1a", "--save", str(out)])
+    assert result.returncode == 0
+    content = out.read_text(encoding="utf-8")
+    assert "\x1b[48;2;26;26;26m" in content
+
+
+def test_bg_color_invalid_hex():
+    result = run(["Hello", "--palette", "neon", "--bg-color", "notahex"])
+    assert result.returncode == 1
+
+
+def test_bg_color_no_color_suppresses_bg():
+    result = run(["Hello", "--palette", "neon", "--bg-color", "#ff0000", "--no-color"])
+    assert result.returncode == 0
+    assert "\x1b[" not in result.stdout
+
+
+# --- Feature 3: --preview-palettes ---
+
+def test_preview_palettes_exits_zero():
+    result = run(["--preview-palettes", "--no-color"])
+    assert result.returncode == 0
+
+
+def test_preview_palettes_lists_all_palettes():
+    result = run(["--preview-palettes", "--no-color"])
+    for name in ("neon", "dracula", "synthwave", "zebra"):
+        assert name in result.stdout
+
+
+def test_preview_palettes_shows_all_23():
+    from color_banner.color import PALETTES
+    result = run(["--preview-palettes", "--no-color"])
+    lines = [l for l in result.stdout.strip().splitlines() if l]
+    assert len(lines) == len(PALETTES)
