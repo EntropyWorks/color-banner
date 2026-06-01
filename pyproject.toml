@@ -30,7 +30,7 @@ Issues = "https://github.com/EntropyWorks/color-banner/issues"
 color-banner = "color_banner.cli:main"
 
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling<1.25"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
